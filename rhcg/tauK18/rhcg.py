@@ -205,9 +205,6 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
     return m, reject_clash, reject_RMSD , attempts , success , ar , conf_index
 
 
-v_translate_concept = np.vectorize(translate_concept)
-v_findClashes = np.vectorize(findClashes)
-v_merge_universe = np.vectorize(merge_universe)
 
 rcAll = 0
 rrAll = 0
