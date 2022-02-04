@@ -1,2 +1,2 @@
 # chain-growth
-Grow ensembles of disordered proteins from fragment libraries
+Grow ensembles of disordered biomolecules from fragment libraries
