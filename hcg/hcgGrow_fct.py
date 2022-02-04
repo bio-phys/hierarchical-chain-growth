@@ -369,14 +369,17 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             last_level = True
             k_max = kmax
 
-        if not last_level and kmax < 50:
-            k_max = 50  # more?
+        # in case one wants to grow only very few full length models
+        # grow at least 20 fragments for each pair in lower levels
+        # to make sure one still succeeds
+        if not last_level and kmax < 20:
+            k_max = 20  # more?
 
         for m_i , pair_l in enumerate(fragment_l):
             proline_2nd_posi = False
             # if promotion of MD fragment in first level DO NOT define old_pair2
+            # index ERROR because in this case, pair_l is no list
             if promotion and isinstance(pair_l, list) == False:
-                # if you don't do this you get an index ERROR because in this case pair_l is no list
                 # subfolder fragment 1 is stored in is called 
                 old_pair1  = pair_l
                 old_pair2  = pair_l
