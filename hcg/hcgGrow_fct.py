@@ -244,6 +244,8 @@ def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
     ri_l : array-like
         array with indices for chosing a specific confoormation of a fragment. The default is None
         if None: draw indices randomly
+    draw_indices : booolean
+        if new random integers == frame indices are drawn or else taken from a input array.
 
     Returns
     -------
@@ -263,8 +265,8 @@ def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
     while k < kmax:
         if draw_indices:
             # random integer to draw random frame
-            r1 = np.random.randint(0,len(u1.trajectory), 1)[0]
-            r2 = np.random.randint(0,len(u2.trajectory), 1)[0]
+            r1 = np.random.randint(u1.trajectory.n_frames)
+            r2 = np.random.randint(u2.trajectory.n_frames)
         else:
             r1 = int(ri_l[k][0])
             r2 = int(ri_l[k][1])
@@ -341,6 +343,8 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
         MD fragment are sampled with or without end-capping groups. The default is True
     ri_l : array-like
         array with indices for chosing a specific confoormation of a fragment. The default is None
+    draw_indices : booolean
+        if new random integers == frame indices are drawn or else taken from a input array.
    
     Returns
     -------
@@ -380,11 +384,11 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             # if promotion of MD fragment in first level DO NOT define old_pair2
             # index ERROR because in this case, pair_l is no list
             if promotion and isinstance(pair_l, list) == False:
-                # subfolder fragment 1 is stored in is called 
+                # subfolder old fragment 1, 2
                 old_pair1  = pair_l
                 old_pair2  = pair_l
             else:
-                # subfolder fragment 1 is stored in is called 
+                # subfolder old fragment 1, 2
                 old_pair1 = flatten(pair_l[0])[0]
                 old_pair2 = flatten(pair_l[1])[0]
 
@@ -463,5 +467,5 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                                   rmsd_cut_off, clash_distance,  kmax=k_max, ri_l=rs,
                                   draw_indices=draw_indices)
         if draw_indices:
-            np.save("{}/confIndex_level{}.npy".format(path, m+1), r_l)
+            np.save("{}/confIndex_level{}.npy".format(path, level), r_l)
     return None
