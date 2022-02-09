@@ -1,1 +1,4 @@
 numpy
+MDAnalysis
+pathlib2
+jupyter
