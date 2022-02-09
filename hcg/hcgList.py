@@ -3,14 +3,16 @@
 import numpy as np
 import collections
 
-def pair_fragments(input_ar, verbose = False):
+def pair_fragments(input_ar, verbose=False):
     """ create pairs for each level
-    original function from Dr. Lukas S. Stelzl, slightly modified by Lisa M. Pietrek
+    original function from Lukas S. Stelzl, slightly modified by Lisa M. Pietrek
     
     Parameter
     ---------
     input_ar : list
         initial list of MD fragments/pairs of paired fragments
+    verbose : Boolean
+        set verbosity level
         
     Returns
     -------
