@@ -1,10 +1,13 @@
-from lib import translate_concept, findClashes, merge_universe
+from lib import mk_universe, translate_concept, findClashes, merge_universe
 import sys
 import pathlib2
+import numpy as np
+import MDAnalysis as mda
+from MDAnalysis.analysis import align
 
-def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0 ,
+def merge_fragment_hierar(path2pep, path2weights, pair ,start = 0 ,
                           range_end = 45, steps2subsequent_fragment = 2 , max_fragments = 100  , index = -1 , 
-                          max_ind = 1000, rmsd_cutOff = 0.2 ,clash_D = 2.0 ,
+                          rmsd_cutOff = 0.6 ,clash_D = 2.0 ,
                            theta=10.0, biased=True):
     
     """ Perform RHCG to grow ensembles of disordered proteins from fragments
@@ -29,8 +32,6 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
         maximum number of models you want to grow. The default is 100.
     index : integer, optional
         last residue to exlude from clash search. The default is -1.
-    max_ind : integer, optional
-        maximum number of models grown in the previous level. The default is 1000.
     rmsd_cutOff : float, optional
         cut-off for the RMSD of the fragment alignment. The default is 0.6
     clash_distance : float, optional
@@ -48,7 +49,6 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
     """
 
     # Loop: Loop through number of growing fragments in steps of paired fragments to grow the chain
-    #print(theta)
     m=[]
     reject_clash = 0
     reject_RMSD = 0
@@ -60,20 +60,16 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
     ar = np.zeros((numPairs , k_max))
     conf_index = np.zeros((2, numPairs , k_max))
     c1 = 0
-    #print numPairs
     for ni, i in enumerate(range(start, range_end ,pair)):
-#        steps2subsequent_fragment = pair/2
         build_ar = True
         # index for subsequent fragment to add to fragment i
         c2 = c1+1
-        #print(c1, c2, ar.shape)
         i2 = int(i+steps2subsequent_fragment)
         dire = "pair{}_{}".format(pair,i)
         k = 0
         pathlib2.Path(dire).mkdir(parents=True, exist_ok=True)
         # list of indices with successful alignment
         matches = []
-        #m = []
        
         index1_alnB=-3
         index1_alnE=-2
@@ -95,17 +91,17 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
         if pair == 2:
             # simulated fragments (pentapep) to start the growing           
             u1 = mk_universe("{}{}/tau_100ns_nw.gro".format(path2pep , i) ,
-                 "{}{}/tau_100ns_fitted.xtc".format(path2pep , i))
+                "{}{}/tau_100ns_fitted.xtc".format(path2pep , i))
             u2 = mk_universe("{}{}/tau_100ns_nw.gro".format(path2pep , i2) ,
                              "{}{}/tau_100ns_fitted.xtc".format(path2pep , i2))
-            
         if pair == 4 and i == 40:
            
             u1 = mda.Universe('pair{}_{}/pair0.pdb'.format(old_pair1, i) ,
                     'pair{}_{}/pair.xtc'.format(old_pair1, i))
 
-            u2 = mk_universe("{}{}/tau_100ns_nw.gro".format(path2pep , i2) ,
+             u2 = mk_universe("{}{}/tau_100ns_nw.gro".format(path2pep , i2) ,
                               "{}{}/tau_100ns_fitted.xtc".format(path2pep , i2))
+
             index2_alnB=2
             index2_alnE=3
          
@@ -130,9 +126,7 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
                     'pair{}_{}/pair.xtc'.format(old_pair1, i))
             u2 = mda.Universe('pair{}_{}/pair0.pdb'.format(old_pair2, i2) ,
                     'pair{}_{}/pair.xtc'.format(old_pair2, i2))
-         #   print(i, i2)
         while k < k_max:
-            #print( pair, i, u1.trajectory, u2.trajectory, max_ind)
             attempts += 1
             if k == 0: # or pair == 42 :
                 writePDB = True
@@ -140,8 +134,9 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
                 writePDB = False
             if biased:
                 if pair == 2:
-                    w1 = np.load("{}{}/w_theta{}.npy".format(path2weights, i, theta))
-                    w2 = np.load("{}{}/w_theta{}.npy".format(path2weights, i2, theta))
+                    w1 = np.load("{}{}/wopt/w_theta{}.npy".format(path2weights, i, theta))
+                    w2 = np.load("{}{}/wopt/w_theta{}.npy".format(path2weights, i2, theta))
+
                     r1 = np.random.choice(len(u1.trajectory),p=w1)
                     r2 = np.random.choice(len(u2.trajectory),p=w2)
     
@@ -149,18 +144,14 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
                     c1= 20 
                     w1 = np.load("ar_pair{}.npy".format(old_pair1))[c1]
                     w2 = np.ones(len(u2.trajectory))/len(u2.trajectory)
-                   # print w2, len(w2)
-     #               print i, i2
-                    r1 = np.random.randint(0,max_ind, 1)[0]
+                    r1 = np.random.randint(len(u1.trajectory))
                     r2 = np.random.choice(len(u2.trajectory),p=w2)
     
                 else:
                     w1 = np.load("ar_pair{}.npy".format(old_pair1))[c1]
-    
                     w2 = np.load("ar_pair{}.npy".format(old_pair2))[c2]
-      #              print c2
-                    r1 = np.random.randint(0,max_ind, 1)[0]
-                    r2 = np.random.randint(0, max_ind, 1)[0]
+                    r1 = np.random.randint(len(u1.trajectory))
+                    r2 = np.random.randint(len(u2.trajectory))
             else:
                 w1 = np.ones(len(u1.trajectory))/ len(u1.trajectory)
                 w2 = np.ones(len(u2.trajectory))/ len(u2.trajectory)
@@ -216,12 +207,12 @@ start = 0
 range_end =  42 
 path2pep = sys.argv[1]
 path2weights = sys.argv[2]
-rmsd_cutOff = float(sys.argv[3])
-clash_D =  float(sys.argv[4])
-max_fragments = int(sys.argv[5])
-theta=sys.argv[6]
+max_fragments = int(sys.argv[3])
+theta=sys.argv[4]
+
+rmsd_cutOff = 0.6
+clash_D = 2.0
 level = 0
-max_ind = max_fragments
 
 for i in [2, 4, 8, 16, 32, 42]:
     start = 0
@@ -233,10 +224,10 @@ for i in [2, 4, 8, 16, 32, 42]:
     if i == 42:
         subsequent_fragment = 32
 
-        max_fragments = int(sys.argv[4])
+        max_fragments = int(sys.argv[5])
 
     matches, rc ,rr, att, succ, ar, confi = merge_fragment_hierar(path2pep = path2pep, path2weights = path2weights, pair = i , steps2subsequent_fragment = subsequent_fragment ,  
-                                               max_fragments = max_fragments , max_ind = max_ind , start=start,  range_end = range_end, 
+                                               max_fragments = max_fragments , start=start,  range_end = range_end, 
                                                rmsd_cutOff = rmsd_cutOff , clash_D = clash_D, theta=theta)
     rcAll+=rc
     rrAll+=rr
