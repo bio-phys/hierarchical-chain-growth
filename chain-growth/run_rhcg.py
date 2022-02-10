@@ -2,7 +2,7 @@
 
 from hcgList import make_hcl_l
 from fragmentList import generate_fragment_list
-from hcgGrow_fct_weights import reweighted_hierarchical_chain_growth
+from hcgGrow_fct import reweighted_hierarchical_chain_growth
 #import sys
 
 ################
