@@ -201,8 +201,8 @@ start = 0
 
 # fulllength tau K18
 range_end =  14
-path2pep = 'chain-growth/example/MDfragments'
-path2weights = 'chain-growth/example/weights'
+path2pep = '../chain-growth/example/MDfragments'
+path2weights = '../chain-growth/example/weights'
 kmax = 10
 theta = 10.0
 
