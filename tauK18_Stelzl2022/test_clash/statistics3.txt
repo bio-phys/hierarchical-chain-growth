@@ -1,9 +1,0 @@
-
-statistics on level 3
-stitching attempts:			154
-rejection because of RMSD:		0
-rejection because of clashes:		54
-success:				100
-acceptance rate:			0.649
-rejection because of clashes in total for 100 FL models:		321
-rejection because of RMSD in total for 100 FL models:		0
