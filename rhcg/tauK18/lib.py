@@ -24,7 +24,7 @@ def translate_concept(u1, u2,index1_alnB=-3, index1_alnE=-2, index2_alnB=1, inde
     return select
 
 
-def findClashes(u1,u2, index1b=-3, index2=3, 
+def find_clashes(u1,u2, index1b=-3, index2=3, 
                  index1e=-1, clash_radius=2.0):
     """ finds clashes: atoms with a distance below clash_radius
     
@@ -73,6 +73,7 @@ def findClashes(u1,u2, index1b=-3, index2=3,
     
     return clsum
 
+## clash search a bit less stringent
 #def findClashes(u1,u2, index1b=-2, index1e=-1, index2=3, clash_radius=2.7):
 #    # atom selection of first fragment
 #    l1 = u1.select_atoms("protein and not (type H) and not resid {}:{}".format(u1.atoms.residues[index1b].resid , u1.atoms.residues[index1e].resid)) 
