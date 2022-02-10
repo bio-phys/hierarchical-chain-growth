@@ -1,0 +1,7 @@
+
+statistics on level 1
+stitching attempts:			82
+rejection because of RMSD:		0
+rejection because of clashes:		12
+success:				70
+acceptance rate:			0.854
