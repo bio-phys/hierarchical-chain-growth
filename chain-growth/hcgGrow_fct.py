@@ -260,6 +260,7 @@ def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
     assembly_atempt = 0
     
     if np.all(ri_l) is None:
+        # array to store random frame indices of successfully assembled fragments / pairs        
         rs = np.zeros((kmax, 2))
     writePDB = True
     while k < kmax:
@@ -505,8 +506,8 @@ def reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merg
     draw_indices : booolean
         if new random integers == frame indices are drawn or else taken from a input array.
     chain_weights_prev_l : list or array-like
-        array of unnormalized weight products from fragments assembled in prevoius level MODIFY!!!
-        eq ??? in stelzl at al JACS Au 2022
+        array with stored product of weights cW1 * cW2 of assembled fragments / pairs from previous level
+        eq 5 in stelzl at al JACS Au 2022
         DO NOT USE as fragment weight to draw random frame - not yet normalized!
         
         
@@ -516,6 +517,10 @@ def reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merg
         rs : list of lists
             successful indices drawn for fragment 1 and 2 during fragment assembly
         assembled_chain_weights : array
+            array with stored product of weights cW1 * cW2 of assembled fragments / pairs from current level
+    else:
+        assembled_chain_weights : array
+            array with stored product of weights cW1 * cW2 of assembled fragments / pairs from current level
         
     else:
         None
@@ -523,13 +528,13 @@ def reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merg
     
     k = 0
     assembly_atempt = 0
+    # array to store product of weights cW1 * cW2 of assembled fragments / pairs from current level
     assembled_chain_weights = np.zeros(kmax)
     
     if np.all(ri_l) is None:
-        
+        # array to store random frame indices of successfully assembled fragments / pairs        
         rs = np.zeros((kmax, 2))
-    else:
-        print(ri_l.shape)
+
     writePDB = True
     while k < kmax:
         print(k, kmax)
@@ -657,7 +662,6 @@ def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path
         else:
             r_l = ri_l[m]
             draw_indices = False
-        # r_l = ri_l[m]
         assembled_chain_weights = []
         # if MD fragments are sampled with end-capping_groups, 
         # they are removed in the last assembly step 

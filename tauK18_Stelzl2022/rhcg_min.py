@@ -48,7 +48,7 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
     success : integer
         successfully assembled pairs per level.
     ar : array
-         array with stored product of unnormalized weights cW1 * cW2 of assembled fragments / pairs
+         array with stored product of weights cW1 * cW2 of assembled fragments / pairs
     conf_index : array
         array with stored frame indices of successfully assembled fragments / pairs
 
@@ -66,16 +66,16 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
     k_max = max_fragments
     numPairs = len(range(start, range_end ,pair))
     
-    # array to store the product of unnormalized weights cW1 * cW2 of assembled fragments / pairs
+    # array to store the product of weights cW1 * cW2 of assembled fragments / pairs
     ar = np.zeros((numPairs , k_max))
     # array  to store the frame indices of successfully assembled fragments / pairs
     conf_index = np.zeros((numPairs, k_max, 2))
-    # counter to fetch theproduct of unnormalized weights cW1 * cW2 from the previous level
+    # counter to fetch the product of weights cW1 * cW2 from the previous level
     c1 = 0
     
     for m_i, i in enumerate(range(start, range_end ,pair)):
         print(i)
-        # counter to fetch theproduct of unnormalized weights cW1 * cW2 from the previous level
+        # counter to fetch the product of weights cW1 * cW2 from the previous level
         c2 = c1+1
         #print(c1, c2, ar.shape)
         i2 = int(i+steps2subsequent_fragment)
