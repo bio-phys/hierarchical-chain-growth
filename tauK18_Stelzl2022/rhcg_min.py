@@ -201,10 +201,10 @@ start = 0
 
 # fulllength tau K18
 range_end =  14
-path2pep = sys.argv[1]
-path2weights = sys.argv[2]
-kmax = int(sys.argv[3])
-theta = sys.argv[4]
+path2pep = 'chain-growth/example/MDfragments'
+path2weights = 'chain-growth/example/weights'
+kmax = 10
+theta = 10.0
 
 rmsd_cutOff = 0.6
 clash_D = 2.0 
