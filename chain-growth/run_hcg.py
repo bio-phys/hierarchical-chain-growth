@@ -36,7 +36,7 @@ n_pairs = len(fragment_l)
 hcg_l, promo_l = make_hcl_l(n_pairs)
 
 # maximal number of pairs/full-length models to assemble
-kmax = 100
+kmax = 10
 # MD fragments are sampled with or without end-capping groups
 capping_groups = True
 

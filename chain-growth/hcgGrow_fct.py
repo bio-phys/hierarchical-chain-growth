@@ -454,7 +454,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             # (or pairs into pairs of pairs)
             if  draw_indices:
                 rs = fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
-                                  rmsd_cut_off, clash_distance,  kmax=k_max, ri_l=ri_l,
+                                  rmsd_cut_off, clash_distance,  kmax=k_max, ri_l=None,
                                   draw_indices=draw_indices)
                 r_l.append(rs)
             else:
