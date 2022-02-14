@@ -73,21 +73,19 @@ def find_clashes(u1,u2, index1b=-3, index2=3,
     
     return clsum
 
-## clash search a bit less stringent
-#def findClashes(u1,u2, index1b=-2, index1e=-1, index2=3, clash_radius=2.7):
-#    # atom selection of first fragment
-#    l1 = u1.select_atoms("protein and not (type H) and not resid {}:{}".format(u1.atoms.residues[index1b].resid , u1.atoms.residues[index1e].resid)) 
-#    # atom selection of subsequent fragmenmt
-#    l2 = u2.select_atoms("protein and not (type H) and not resid 1:{}".format(u2.atoms.residues[index2].resid))
-#
-#    ## code snippet from Soeren von Buelow
-#    distmat = distances.distance_array(l1.positions,l2.positions)
-#    cont = np.less(distmat,clash_radius) # see where distmat < cutoff
-#    cont = np.where(cont,1,0) # True --> 1, False --> 0 (to count pairs)
-#    clsum = np.sum(cont)
-#    return clsum
+# clash search a bit less stringent
+def find_clashes_less_stringent(u1,u2, index1b=-2, index1e=-1, index2=3, clash_radius=2.7):
+    # atom selection of first fragment
+    l1 = u1.select_atoms("protein and not (type H) and not resid {}:{}".format(u1.atoms.residues[index1b].resid , u1.atoms.residues[index1e].resid)) 
+    # atom selection of subsequent fragmenmt
+    l2 = u2.select_atoms("protein and not (type H) and not resid 1:{}".format(u2.atoms.residues[index2].resid))
 
-
+    ## code snippet from Soeren von Buelow
+    distmat = distances.distance_array(l1.positions,l2.positions)
+    cont = np.less(distmat,clash_radius) # see where distmat < cutoff
+    cont = np.where(cont,1,0) # True --> 1, False --> 0 (to count pairs)
+    clsum = np.sum(cont)
+    return clsum
 
 def merge_universe(u1,u2, sel1, sel2):
     # atom selection of growing peptide u1 to be merged
