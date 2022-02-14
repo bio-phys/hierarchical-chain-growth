@@ -1,6 +1,8 @@
 # Byte-compiled files
 __pycache__/
 *.pyc
+*.npz
 
-# ignore outputs tests
-test*
+# ignore somw outputs tests
+test_clashes
+
