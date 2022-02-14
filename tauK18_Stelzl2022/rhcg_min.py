@@ -39,19 +39,8 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
     
     Returns
     -------
-    reject_clash : integer
-        rejection per level due to clashes.
-    reject_RMSD : integer
-        rejection per level due to clashes.
-    attempts : integer
-        assembly attempts per level.
-    success : integer
-        successfully assembled pairs per level.
-    ar : array
-         array with stored product of weights cW1 * cW2 of assembled fragments / pairs
-    conf_index : array
-        array with stored frame indices of successfully assembled fragments / pairs
-
+    None
+    
     """
 
     # Loop: Loop through number of growing fragments in steps of paired fragments to grow the chain
@@ -189,15 +178,12 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
                 reject_RMSD += 1
         c1 +=2
         allPairs = mda.Universe("{}/pair0.pdb".format(dire) , at)
-        allPairs.atoms.write("{}/pair.xtc".format(dire) , frames='all') ## new MDA version
-    return reject_clash, reject_RMSD, attempts, success, ar, conf_index
-
-
+        allPairs.atoms.write("{}/pair.xtc".format(dire) , frames='all') 
+    return None
 
 rcAll = 0
 rrAll = 0
 start = 0
-
 
 # fulllength tau K18
 range_end =  14
@@ -214,30 +200,10 @@ level = 1
 for i in [2, 4, 8, 16]:
     start = 0
     subsequent_fragment = int(i/2)
-    reject_clash, reject_RMSD, attempts, success, ar, conf_index = reweighted_hierarchical_chain_growth(
-                                               path2pep = path2pep,
-                                               path2weights = path2weights, pair = i,
-                                               steps2subsequent_fragment = subsequent_fragment,
-                                               max_fragments = kmax , start=start,  range_end = range_end, 
-                                               rmsd_cutOff = rmsd_cutOff , clash_D = clash_D, theta=theta)
-    rcAll += reject_clash
-    rrAll += reject_RMSD
-    np.save('ar_pair{}.npy'.format(i) , ar)
-    np.save('confIndex_pair{}.npy'.format(i) , conf_index)
+    reweighted_hierarchical_chain_growth(path2pep = path2pep, path2weights = path2weights, pair = i,
+                                         steps2subsequent_fragment = subsequent_fragment,
+                                         max_fragments = kmax , start=start,  range_end = range_end, 
+                                         rmsd_cutOff = rmsd_cutOff , clash_D = clash_D, theta=theta)
 
-    out = open( "statistics{}.txt".format(level), "w")
-    out.write("\nstatistics on level {}\n"
-              "stitching attempts:\t\t\t{}\n"
-              "rejection because of RMSD:\t\t{}\n"
-              "rejection because of clashes:\t\t{}\n"
-              "success:\t\t\t\t{}\n"
-              "acceptance rate:\t\t\t{}\n".format(level, attempts, reject_RMSD, reject_clash,
-                                                  success, round(success/attempts, 3)))
-    if i == 16:
-        out.write("rejection because of clashes in total for {} FL models:\t\t{}\n"
-                        "rejection because of RMSD in total for {} FL models:\t\t{}".format(kmax,rcAll,
-                                                                                            kmax,rrAll))
-
-    out.close()
     level += 1
 
