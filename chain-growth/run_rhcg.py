@@ -15,7 +15,7 @@ path0 = 'example/'
 ## path to store assembled models in
 path = 'example/test_weighted/'
 #path weights
-path2weights = '/home/lisa/PhD/projects/tau/analysis/HCG/BioEnImportanceSampling/cs/f2_rc'
+path2weights = 'example/weights/'
 ## file with sequence, format: "fasta" or "PDB"
 sequence_f = 'example/short_tau.fasta'
 # theta for fragment reweighting
