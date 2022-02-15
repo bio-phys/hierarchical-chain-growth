@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 
+"""
+hcgList
+-------
+prepare list of pairs needed as input for hcg
+pairs = fragments or pairs of fragments that are assembled into pairs of fragments or pairs of pairs
+"""
+
 import numpy as np
 import collections
 
