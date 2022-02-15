@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 *.npz
+.ipynb_checkpoints/
 
 # ignore somw outputs tests
 test_clashes
