@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+genFragment
+-----------
+prepare short overlapping fragments to generate a MD fragment library for (R)HCG
+-> script divide fulllength sequence of an IDP into fragments of desired length
+-> and overlap between subsequent fragments
+=> generate tleap.txt file with fragments covering the sequence of the desired IDP
+=> tleap.txt is the input file for Amber Tool "tleap", which can build molecules with a given sequence
+"""
 import sys
 sys.path.append('..')
 from chain_growth.fragmentList import generate_fragment_list
-
-###############
-## prepare short overlapping fragments to generate a MD fragment library for (R)HCG
-## -> script divide fulllength sequence of an IDP into fragments of desired length
-## -> and overlap between subsequent fragments
-## => generate tleap.txt file with fragments covering the sequence of the desired IDP
-## => tleap.txt is the input file for Amber Tool "tleap", which can build molecules with a given sequence
-##############
-
 
 #############
 ## define the architecture of your fragments

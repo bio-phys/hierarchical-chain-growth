@@ -1,0 +1,46 @@
+source leaprc.protein.ff14SB
+fragment = sequence {ACE  LEU GLN THR ALA PRO NME}
+savepdb fragment 0/fragment.pdb
+
+fragment = sequence {ACE  ALA PRO VAL PRO MET NME}
+savepdb fragment 1/fragment.pdb
+
+fragment = sequence {ACE  PRO MET PRO ASP LEU NME}
+savepdb fragment 2/fragment.pdb
+
+fragment = sequence {ACE  ASP LEU LYS ASN VAL NME}
+savepdb fragment 3/fragment.pdb
+
+fragment = sequence {ACE  ASN VAL LYS SER LYS NME}
+savepdb fragment 4/fragment.pdb
+
+fragment = sequence {ACE  SER LYS ILE GLY SER NME}
+savepdb fragment 5/fragment.pdb
+
+fragment = sequence {ACE  GLY SER THR GLU ASN NME}
+savepdb fragment 6/fragment.pdb
+
+fragment = sequence {ACE  GLU ASN LEU LYS HIS NME}
+savepdb fragment 7/fragment.pdb
+
+fragment = sequence {ACE  LYS HIS GLN PRO GLY NME}
+savepdb fragment 8/fragment.pdb
+
+fragment = sequence {ACE  PRO GLY GLY GLY LYS NME}
+savepdb fragment 9/fragment.pdb
+
+fragment = sequence {ACE  GLY LYS VAL GLN ILE NME}
+savepdb fragment 10/fragment.pdb
+
+fragment = sequence {ACE  GLN ILE ILE ASN LYS NME}
+savepdb fragment 11/fragment.pdb
+
+fragment = sequence {ACE  ASN LYS LYS LEU ASP NME}
+savepdb fragment 12/fragment.pdb
+
+fragment = sequence {ACE  LEU ASP LEU SER ASN NME}
+savepdb fragment 13/fragment.pdb
+
+fragment = sequence {ACE  SER ASN VAL GLN SER NME}
+savepdb fragment 14/fragment.pdb
+
