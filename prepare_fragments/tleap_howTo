@@ -1,0 +1,9 @@
+# example for preparing fragments using amber tleap 
+1a. install amber + amberTools (same version, version < 18)
+1b. or install amberMD18 
+
+2. run tleap with tleap.txt file as input
+$ tleap -f tleap.txt
+
+3. quit tleap
+> quit
