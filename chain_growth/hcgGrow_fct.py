@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+"""
+hcgGrow_fct
+-----------
+core functions for hierarchical chain growth
+"""
+
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.analysis import align
