@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+check_sequence
+--------------
+script to check wether full-length IDP grown via HCG has the correct sequence
+== same as the input sequence
+"""
 
 from fragmentList import get_sequence_from_fasta, get_sequence_from_pdb
 import os #, pytest 
