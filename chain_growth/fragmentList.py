@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-
+"""
+fragmentList
+-----------
+prepare a list of fragments with desired length + overlap from input sequence
+== IDP/ IDR to grow using (r)hcg
+"""
 import MDAnalysis as mda
 import os
 
