@@ -28,8 +28,6 @@ _[NOTES!!]_
 
 ### Run chain growth
 
-## TODO:
-- development code as new branch
 
 ## References
 Hierarchical Ensembles of Intrinsically Disordered Proteins at Atomic Resolution in Molecular Dynamics Simulations, 
