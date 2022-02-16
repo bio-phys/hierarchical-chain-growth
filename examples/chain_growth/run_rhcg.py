@@ -4,10 +4,11 @@ run_rhcg
 --------
 run reweighted hierarchical chain growth
 """
-from hcgList import make_hcl_l
-from fragmentList import generate_fragment_list
-from hcgGrow_fct import reweighted_hierarchical_chain_growth
-#import sys
+import sys
+sys.path.append('../../')
+from chain_growth.hcg_list import make_hcl_l
+from chain_growth.fragment_list import generate_fragment_list
+from chain_growth.hcg_fct import reweighted_hierarchical_chain_growth
 
 ################
 ## prepare HCG
@@ -15,13 +16,13 @@ from hcgGrow_fct import reweighted_hierarchical_chain_growth
 
 ## input file and path / output path
 # path to MD fragments
-path0 = 'example/'
+path0 = '..'
 # path to store assembled models in
-path = 'example/test_weighted/'
+path = 'truncated_tauK18_weighted/'
 #path weights
-path2weights = '/home/lisa/PhD/projects/tau/analysis/HCG/BioEnImportanceSampling/cs/f2_rc'
-## file with sequence, format: "fasta" or "PDB"
-sequence_f = 'example/short_tau.fasta'
+path2weights = '../weights'
+# file with sequence, format: "fasta" or "PDB"
+sequence_f = '../truncated_tauK18.fasta'
 # theta for fragment reweighting
 theta=10.0
 

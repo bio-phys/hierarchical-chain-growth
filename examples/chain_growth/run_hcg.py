@@ -5,10 +5,11 @@ run_hcg
 -------
 run hierarchical chain groẃth
 """
-
-from hcgList import make_hcl_l
-from fragmentList import generate_fragment_list
-from hcgGrow_fct import hierarchical_chain_growth
+import sys
+sys.path.append('../../')
+from chain_growth.hcg_list import make_hcl_l
+from chain_growth.fragment_list import generate_fragment_list
+from chain_growth.hcg_fct import hierarchical_chain_growth
 
 ################
 ## prepare HCG
@@ -16,11 +17,11 @@ from hcgGrow_fct import hierarchical_chain_growth
 
 ## input file and path / output path
 # path to MD fragments
-path0 = 'example/'
+path0 = '..'
 # path to store assembled models in
-path = 'example/test/'
+path = 'truncated_tauK18/'
 # file with sequence, format: "fasta" or "PDB"
-sequence_f = 'example/short_tau.fasta'
+sequence_f = '../truncated_tauK18.fasta'
 
 ## fragment construction
 # length of MD fragments (without the end-capping groups if present)
