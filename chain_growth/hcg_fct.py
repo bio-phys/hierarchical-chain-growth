@@ -11,7 +11,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import align
 import pathlib2, shutil, os
 import MDAnalysis.analysis.distances as distances
-from hcg_list import flatten
+from chain_growth.hcg_list import flatten
 
 
 def translate_concept(u1, u2, proline_2nd_posi, align_begin1, align_end1, 
