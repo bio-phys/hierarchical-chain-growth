@@ -11,7 +11,7 @@ prepare short overlapping fragments to generate a MD fragment library for (R)HCG
 """
 import sys
 sys.path.append('../../')
-from chain_growth.fragmentList import generate_fragment_list
+from chain_growth.fragment_list import generate_fragment_list
 
 #############
 ## define the architecture of your fragments
@@ -20,7 +20,7 @@ from chain_growth.fragmentList import generate_fragment_list
 ### get the sequence of your IDP ###
 ## either use a model of your IDP saved in a pdb 
 ## or save the sequence (eg from fasta file) 
-sFile = '../chain_growth/example/short_tau.fasta'
+sFile = '../truncated_tauK18.fasta'
 
 ## length of the fragments you want to build
 fragmentLength = 5
