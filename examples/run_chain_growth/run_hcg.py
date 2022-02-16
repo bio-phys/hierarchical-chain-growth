@@ -30,7 +30,7 @@ fragment_length = 5
 # == number of the same residues in subsequent fragments
 overlap = 2
 
-## generate list of fragments, dictionairy of overlaps between fragments
+## generate list of fragments, dictionary of overlaps between fragments
 # generating overlaps_d is necessary, since to match the full-ltngh sequennce
 # the overlap between e.g., the two last fragments can vary
 fragment_l, overlaps_d = generate_fragment_list(sequence_f, fragment_length, overlap)
