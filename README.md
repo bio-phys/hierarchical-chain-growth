@@ -5,7 +5,7 @@ Grow ensembles of disordered biomolecules from fragment libraries
 Algorithm to assemble full-length chains of disordered proteins / regions from short overlapping fragments. 
 As iinput to perform the hierarchical chain growth you need the sequence of the desired IDP and provide a MD fragment library
 
-We provide example some scripts:
+We provide some example scripts:
 - to prepare the fragments to generate the MD fragment libraries using amber tleap
 - (to run REMD simulations of the fragments on a SLURM-based cluster)
 - to run hcg or rhcg + corresponding weights for a truncated tau K18
@@ -17,13 +17,17 @@ We provide example some scripts:
 - a MD fragment library. You may prepare the library following the examples given in this repository.
 - if you want to perform RHCG: weights for the individual fragments (e.g., from ensemble reweighting against experimental data reporting on _local_ structure properties - such as chemical shifts)
 
-## Run tests
+### prepare fragments
 
-## REMD simulation of short fragments to generate MD fragment libraries
+### REMD simulation of short fragments to generate MD fragment libraries
 _[NOTES!!]_
 - example scripts for SLURM-based cluster
 - need to be adapted to cluster setup and again benchmarked
-- REMD submit scripts for individual fragment - ideally write loop cover all fragments
+- REMD submit scripts for individual fragment - ideally write loop to cover all fragments
+
+### chain growth
+
+## Run tests
 
 ## References
 Hierarchical Ensembles of Intrinsically Disordered Proteins at Atomic Resolution in Molecular Dynamics Simulations
