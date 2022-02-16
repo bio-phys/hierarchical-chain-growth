@@ -1,4 +1,9 @@
-from lib import mk_universe, translate_concept, find_clashes, merge_universe
+"""
+rhcg_min
+---------
+development version of rhcg - run example for short tau K18
+"""
+from lib import translate_concept, find_clashes, merge_universe
 import sys
 import pathlib2
 import numpy as np
@@ -95,10 +100,10 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
         if pair == 2:
             # simulated fragments for level 1== pair 2
             # adapt to run with minimal example
-            u1= mk_universe("{}{}/pair0.pdb".format(path2pep , i) ,
+            u1= mda.Universe("{}{}/pair0.pdb".format(path2pep , i) ,
                  "{}{}/pair.xtc".format(path2pep , i))
 
-            u2 = mk_universe("{}{}/pair0.pdb".format(path2pep , i2) ,
+            u2 = mda.Universe("{}{}/pair0.pdb".format(path2pep , i2) ,
                              "{}{}/pair.xtc".format(path2pep , i2))
 
         # adapt to run with minimal example
@@ -107,7 +112,7 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
             u1 = mda.Universe('pair{}_{}/pair0.pdb'.format(old_pair1, i) ,
                     'pair{}_{}/pair.xtc'.format(old_pair1, i))
             # adapt to run with minimal example
-            u2 = mk_universe("{}{}/pair0.pdb".format(path2pep , i2) ,
+            u2 = mda.Universe("{}{}/pair0.pdb".format(path2pep , i2) ,
                              "{}{}/pair.xtc".format(path2pep , i2))     
         if pair == 16:
             res2merge_begin1 = 2 #resID
@@ -190,7 +195,7 @@ range_end =  14
 path='/home/user/hierarchical-chain-growth'
 path2pep = '{}/chain_growth/example/MDfragments/'.format(path)
 path2weights = '{}/chain_growth/example/weights/'.format(path)
-kmax = 500
+kmax = 100
 theta = 10.0
 
 rmsd_cutOff = 0.6
