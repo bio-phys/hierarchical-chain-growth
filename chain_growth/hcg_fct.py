@@ -214,15 +214,15 @@ def get_residue_indices_for_assembly(overlap0, current_overlap, capping_groups,
     index_merge_l = [merge_begin1, merge_end1, merge_begin2, merge_end2]
     
     if verbose:
-        print('overlap in indices fct: ' , current_overlap,
-              '1 alnB alnE, 2 alnB alnE ', index_aln_l)
-        print('1 clashB, 2 clashE ', index_clash_l)
-        print('1 mergeB mergeE, 2 mergeB mergeE ', index_merge_l)
+        print('overlap between fragment 1 & 2:' , current_overlap,
+                'align begin / end in fragment 1 & 2, respectively: ', index_aln_l,
+                'clash search begin / end in fragment 1 & 2, respectively: ', index_clash_l,
+                'merge begin / end in fragment 1 & 2, respectively: ', index_merge_l)
         
     return index_aln_l, index_clash_l, index_merge_l
         
 def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
-         rmsd_cut_off, clash_distance, kmax, ri_l, draw_indices):
+         rmsd_cut_off, clash_distance, kmax, ri_l=None, draw_indices=True):
     """ assemble the fragments to pairs
     
     Parameters
@@ -321,7 +321,7 @@ def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
 
 def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
              rmsd_cut_off=0.6, clash_distance=2.0, capping_groups=True,
-             ri_l=0, verbose=False):
+             ri_l=None, verbose=False):
     """ perform hierarchical chain growth 
     assemble fragments/ pairs of fragments until reaching the full-length chain
 
@@ -349,7 +349,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
     capping_groups : boolean, optional
         MD fragment are sampled with or without end-capping groups. The default is True
     ri_l : array-like
-        array with indices for chosing a specific confoormation of a fragment. The default is None (=0)
+        array with indices for chosing a specific confoormation of a fragment. The default is None
     draw_indices : booolean
         if new random integers == frame indices are drawn or else taken from a input array.
    
@@ -368,13 +368,14 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
         previous_level = m
         promotion  = promo_l[m]
         overlap = overlaps_d[0]
-        if ri_l == 0:
-            draw_indices = True
-            r_l = []
-        else:
+        try:
+            if np.all(ri_l) is None:
+                draw_indices = True
+                r_l = []
+        except:
             r_l = ri_l[m]
             draw_indices = False
-            
+           
         # if MD fragments are sampled with end-capping_groups, 
         # they are removed in the last assembly step 
         if m+1 == len(hcg_l):
@@ -460,8 +461,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             # (or pairs into pairs of pairs)
             if  draw_indices:
                 rs = fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
-                                  rmsd_cut_off, clash_distance,  kmax=k_max, ri_l=None,
-                                  draw_indices=draw_indices)
+                                  rmsd_cut_off, clash_distance,  kmax=k_max)
                 r_l.append(rs)
             else:
                 rs = r_l[m_i]
@@ -474,7 +474,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
 
 
 def reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
-         rmsd_cut_off, clash_distance, kmax, w_l, ri_l=None, draw_indices=False,
+         rmsd_cut_off, clash_distance, kmax, w_l, ri_l=None, draw_indices=True,
          chain_weights_prev_l=None):
     """ assemble the fragments to pairs
     
@@ -543,7 +543,6 @@ def reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merg
 
     writePDB = True
     while k < kmax:
-        print(k, kmax)
         if draw_indices:
             # random integer to draw random frame
             r1 = np.random.choice(u1.trajectory.n_frames, p=w_l[0])
@@ -565,7 +564,6 @@ def reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merg
             # calculate clashes
             clashes = find_clashes(u1 , u2 , index1b=index_clash_l[0] , index2e=index_clash_l[1],
                                   clash_radius=clash_distance)
-      #      print(r1, r2, clashes)
             
             if clashes < 1:
                 ## assemble the subsequent fragments 
@@ -582,11 +580,6 @@ def reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merg
                 
                 ## calculate weight for assembled chain/ fragment at step k
                 ## unnormalized! except for mdfragments
-                # print(chain_weights_prev_l[0].shape, chain_weights_prev_l[1].shape, len(chain_weights_prev_l))#,
-                      # chain_weights_prev_l[0][r1] , chain_weights_prev_l[1][r2])
-                # if np.all(chain_weights_prev_l) is not None:
-                    
-                  #  print(chain_weights_prev_l[0][r1], chain_weights_prev_l[1][r2])
                 assembled_chain_weights[k] = chain_weights_prev_l[0][r1] * chain_weights_prev_l[1][r2]
                 if draw_indices:
                     rs[k] = [r1,r2]
@@ -607,7 +600,7 @@ def reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merg
 
 def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
              rmsd_cut_off=0.6, clash_distance=2.0, capping_groups=True,
-             ri_l=0,  path2weights='weights/', theta=10.0,  verbose=False):
+             ri_l=None,  path2weights='weights/', theta=10.0,  verbose=False):
     """ perform reweighted hierarchical chain growth (+ ímportance sampling)
     assemble fragments (reweighted according to experimental data)
                         or pairs of fragments until reaching the full-length chain
@@ -659,15 +652,14 @@ def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path
             chain_weights_prev = np.load("{}/chain_weight_level{}.npy".format(path, previous_level), allow_pickle=True)
         else:
             chain_weights_prev = None 
-
-        
-        if ri_l == 0:
-            draw_indices = True
-            r_l = []
-            
-        else:
+        try:
+            if np.all(ri_l) is None:
+                draw_indices = True
+                r_l = []
+        except:
             r_l = ri_l[m]
             draw_indices = False
+
         assembled_chain_weights = []
         # if MD fragments are sampled with end-capping_groups, 
         # they are removed in the last assembly step 
@@ -712,10 +704,7 @@ def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path
                 if level == 1:
                     w  = np.genfromtxt('{}/{}/wopt/w_theta{}_dat.txt'.format(path2weights, old_pair1, theta))
                 else:
-                    # print('level, fragment, old_pairs, counter, shape chain_weights_prev ', level, m_i, old_pair1,
-                    #   old_pair2, c1, c2,  chain_weights_prev.shape)
                     w = chain_weights_prev[c1]
-                # assembled_chain_weights[m_i] = w
                 assembled_chain_weights.append(w)
                 if os.path.exists('{}/pair0.pdb'.format(dire)):
                     # print('already copied promoted fragment ', 
@@ -740,8 +729,6 @@ def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path
                 w2  = np.genfromtxt('{}/{}/wopt/w_theta{}_dat.txt'.format(path2weights, old_pair2, theta))
                 chain_weights_prev_l = [w1, w2]
             else:
-                # print('level, fragment, old_pairs, counter, shape chain_weights_prev ', level, m_i, old_pair1,
-                #       old_pair2, c1, c2, chain_weights_prev.shape)
                 w1 = np.ones(u1.trajectory.n_frames)/u1.trajectory.n_frames
                 w2 = np.ones(u2.trajectory.n_frames)/u2.trajectory.n_frames
                 chain_weights_prev_l = [chain_weights_prev[c1], chain_weights_prev[c2]]
@@ -784,8 +771,8 @@ def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path
             if  draw_indices:
                 
                 rs, acw_mi = reweighted_fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
-                                  rmsd_cut_off, clash_distance,  kmax=k_max, w_l=w_l, ri_l=None,
-                                  draw_indices=draw_indices, chain_weights_prev_l=chain_weights_prev_l)
+                                  rmsd_cut_off, clash_distance,  kmax=k_max, w_l=w_l,
+                                  chain_weights_prev_l=chain_weights_prev_l)
                 r_l.append(rs)
                 assembled_chain_weights.append(acw_mi)
             else:
@@ -796,7 +783,6 @@ def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path
                 assembled_chain_weights.append(acw_mi)
             c1 += 2
         if draw_indices:
-            # print(draw_indices)
             np.save("{}/confIndex_level{}.npy".format(path, level), r_l)        
         np.save("{}/chain_weight_level{}.npy".format(path, level), assembled_chain_weights)
     return None
