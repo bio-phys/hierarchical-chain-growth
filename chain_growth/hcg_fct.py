@@ -450,7 +450,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             # defined as "mobile" and "ref" you want to superimpose
             select = translate_concept(u1, u2, proline_2nd_posi, *index_aln_l)
             if verbose:
-                print('level pair to grow, length old pair, old_pair1, old_pair2, overlap',
+                print('level pair to grow, previous level, old_pair1, old_pair2, overlap',
                       level, previous_level, old_pair1, old_pair2, o)
                 print('fragment 1 ',
                       u1.select_atoms('{}'.format(select['mobile'])).residues.resnames)
@@ -759,7 +759,7 @@ def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path
             # defined as "mobile" and "ref" you want to superimpose
             select = translate_concept(u1, u2, proline_2nd_posi, *index_aln_l)
             if verbose:
-                print('level pair to grow, length old pair, old_pair1, old_pair2, overlap',
+                print('level pair to grow, previous_level, old_pair1, old_pair2, overlap',
                       level, previous_level, old_pair1, old_pair2, o)
                 print('fragment 1 ',
                       u1.select_atoms('{}'.format(select['mobile'])).residues.resnames)
