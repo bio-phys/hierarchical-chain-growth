@@ -20,6 +20,11 @@ We provide some example scripts for a truncated tau K18 in the examples folder:
 
 ## Examples truncated tauK18
 ### Prepare fragments
+- use amber tleap to generate (end-capped) fagments of desired length and with desired overlap
+- generally for generate_fragmemnt.py you need as input a fasta or pdb file to get the sequence of the IDP/IDR you want to grow
+- here we show the procedure using truncated tauK18 sequence as inout(in form of a fasta file)
+- output is a txt file containint all the fragments that you need to generate using tleap 
+        - the file can be used as input for tleap
 
 ### REMD simulation of short fragments to generate MD fragment libraries
 _[NOTES!!]_
