@@ -192,9 +192,9 @@ start = 0
 
 # fulllength tau K18
 range_end =  14
-path='/home/user/hierarchical-chain-growth'
-path2pep = '{}/chain_growth/example/MDfragments/'.format(path)
-path2weights = '{}/chain_growth/example/weights/'.format(path)
+path = sys.argv[1]
+path2pep = sys.argv[2]
+path2weights = sys.argv[3]
 kmax = 100
 theta = 10.0
 
