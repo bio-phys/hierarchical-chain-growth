@@ -5,4 +5,4 @@ __pycache__/
 .ipynb_checkpoints/
 
 # ignore somw outputs tests
-examples/run_chain_growth/truncated_tK18*
+examples/run_chain_growth/truncated_tauK18*
