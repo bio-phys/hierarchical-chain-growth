@@ -1,14 +1,15 @@
-# Hierarchical-chain-growth
+# Hierarchical chain growth
 Grow ensembles of disordered biomolecules from fragment libraries
 
 ## Overview
 Algorithm to assemble full-length chains of disordered proteins / regions from short overlapping fragments. 
-As iinput to perform the hierarchical chain growth you need the sequence of the desired IDP and provide a MD fragment library
+As input to perform the hierarchical chain growth you need the sequence of the desired IDP and provide a MD fragment library
 
-We provide some example scriptsfor a truncated tau K18 in the example folder:
+We provide some example scripts for a truncated tau K18 in the examples folder:
 - to prepare the fragments to generate the MD fragment libraries using amber tleap
 - (to run REMD simulations of the fragments on a SLURM-based cluster)
-- to run hcg or rhcg + corresponding weights
+- to run hcg or rhcg 
+	- MDfragment library + corresponding weights for rhcg
 
 ## Installation
 
