@@ -4,5 +4,6 @@ __pycache__/
 *.npz
 .ipynb_checkpoints/
 
-# ignore somw outputs tests
-examples/run_chain_growth/truncated_tauK18*
+# ignore some outputs tests
+truncated_tauK18/
+truncated_tauK18_weightes/
