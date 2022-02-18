@@ -1,0 +1,39 @@
+#!/bin/bash -l
+# Standard output and error:
+#SBATCH -o ./name.out.%j
+#SBATCH -e ./name.err.%j
+# Initial working directory:
+#SBATCH -D ./
+#SBATCH --array=1-10
+#
+#SBATCH -J job_name
+# Number of nodes and MPI tasks per node:
+# Queue:
+#SBATCH --partition=s.bio       # NEEDED; otherwise the job blocks a whole node
+# SBATCH --constraint="gpu"      # if we want to use GPUs at all
+# SBATCH --gres=gpu:1            # use 1 GPU
+#SBATCH --mem=4000             # Memory is necessary if using only part of a node
+#
+# Number of nodes and MPI tasks per node:
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mail-type=none
+#SBATCH --mail-user=%u@rzg.mpg.de
+#
+# wall clock limit:
+#SBATCH --time=04:00:00
+
+# modules, adapt to your cluster
+module load purge
+module load gcc impi
+module load anaconda/3/2020.02
+# module load cuda ## if you want to use gpu
+
+
+# each task will run hcg and put out the assembled chains in an individual folder (== $SLURM_ARRAY_TASK_ID)
+# if you want to run hcg like that you need to adapt run_hcg.py such that it takes $SLURM_ARRAY_TASK_ID as argument to, e.g., adapt the output path (== 'path' in run_hcg.py)
+
+mkdir -p $SLURM_ARRAY_TASK_ID
+
+python run_hcg.py $SLURM_ARRAY_TASK_ID 
+
