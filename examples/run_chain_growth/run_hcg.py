@@ -5,8 +5,6 @@ run_hcg
 -------
 run hierarchical chain groẃth
 """
-import sys
-sys.path.append('../../')
 from chain_growth.hcg_list import make_hcl_l
 from chain_growth.fragment_list import generate_fragment_list
 from chain_growth.hcg_fct import hierarchical_chain_growth

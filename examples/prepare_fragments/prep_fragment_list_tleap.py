@@ -9,8 +9,6 @@ prepare short overlapping fragments to generate a MD fragment library for (R)HCG
 => generate tleap.txt file with fragments covering the sequence of the desired IDP
 => tleap.txt is the input file for Amber Tool "tleap", which can build molecules with a given sequence
 """
-import sys
-sys.path.append('../../')
 from chain_growth.fragment_list import generate_fragment_list
 
 #############
