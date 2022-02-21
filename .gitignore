@@ -5,5 +5,5 @@ __pycache__/
 .ipynb_checkpoints/
 
 # ignore some outputs tests
-truncated_tauK18/
-truncated_tauK18_weightes/
+/truncated_tauK18/
+/truncated_tauK18_weightes/
