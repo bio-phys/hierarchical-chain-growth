@@ -7,3 +7,8 @@ __pycache__/
 # ignore some outputs tests
 /truncated_tauK18/
 /truncated_tauK18_weightes/
+
+# dirs from develop
+hierarchical_chain_growth.egg-info/
+dist/
+build/

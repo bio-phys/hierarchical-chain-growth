@@ -2,3 +2,4 @@ numpy
 MDAnalysis==1.0.0
 pathlib2
 jupyter
+pytest
