@@ -10,7 +10,11 @@ conformations can be used to improve the quality of ensembles in reweighted hier
 which have used to study tau K18. 
 
 In the examples folder we use a truncated protein sequence of tau K18 to keep file sizes managable. We provide
-fragment libraries for this truncated sequence and example scripts to run HCG and RHCG.
+fragment libraries for this truncated sequence and example scripts to run HCG and RHCG. 
+
+We also provide our script-based workflow to generate conformational ensembles of a set of fragments. With these
+scripts it is possible to efficiently sample the local conformations of disordered proteins such as tau or 
+alpha-synuclein. To accurately sample local-structure we use replica exchange molecular dnymaics. 
 
 ## Installation
 
