@@ -10,7 +10,7 @@ import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.analysis import align
 
-def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0 ,
+def reweighted_hierarchical_chain_growth(path2pep, path2weights, path, pair ,start = 0 ,
                           range_end = 14, steps2subsequent_fragment = 2 , max_fragments = 100  , index = -1 , 
                           rmsd_cutOff = 0.6 ,clash_D = 2.0, theta=10.0):    
     
@@ -22,6 +22,8 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
         path to MD fragment library.
     path2weights : string
         path to MD fragment library.
+    path : string
+        output path
     pair : integer
         fragment pair you are growing 
     start : integer, optional
@@ -73,7 +75,7 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
         c2 = c1+1
         #print(c1, c2, ar.shape)
         i2 = int(i+steps2subsequent_fragment)
-        dire = "pair{}_{}".format(pair,i)
+        dire = "{}/pair{}_{}".format(path, pair,i)
         k = 0
         pathlib2.Path(dire).mkdir(parents=True, exist_ok=True)
         
@@ -108,9 +110,9 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
 
         # adapt to run with minimal example
         if pair == 4 and i == 12: 
-            print('exception')
-            u1 = mda.Universe('pair{}_{}/pair0.pdb'.format(old_pair1, i) ,
-                    'pair{}_{}/pair.xtc'.format(old_pair1, i))
+            print('promote fragment from lower level')
+            u1 = mda.Universe('{}/pair{}_{}/pair0.pdb'.format(path, old_pair1, i) ,
+                    '{}/pair{}_{}/pair.xtc'.format(path, old_pair1, i))
             # adapt to run with minimal example
             u2 = mda.Universe("{}{}/pair0.pdb".format(path2pep , i2) ,
                              "{}{}/pair.xtc".format(path2pep , i2))     
@@ -118,10 +120,10 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
             res2merge_begin1 = 2 #resID
             res2merge_end2 = -2 #index
         if pair != 2 and not (pair == 4 and i == 12):
-            u1 = mda.Universe('pair{}_{}/pair0.pdb'.format(old_pair1, i) ,
-                    'pair{}_{}/pair.xtc'.format(old_pair1, i))
-            u2 = mda.Universe('pair{}_{}/pair0.pdb'.format(old_pair2, i2) ,
-                    'pair{}_{}/pair.xtc'.format(old_pair2, i2))
+            u1 = mda.Universe('{}/pair{}_{}/pair0.pdb'.format(path, old_pair1, i) ,
+                    '{}/pair{}_{}/pair.xtc'.format(path, old_pair1, i))
+            u2 = mda.Universe('{}/pair{}_{}/pair0.pdb'.format(path, old_pair2, i2) ,
+                    '{}/pair{}_{}/pair.xtc'.format(path, old_pair2, i2))
             
         writePDB = True
         
@@ -139,15 +141,15 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
 
             elif pair == 4 and i == 12:
                 c1 = -1 
-                w1 = np.load("ar_pair{}.npy".format(old_pair1))[c1]
+                w1 = np.load("{}/chain_weight_pair{}.npy".format(path, old_pair1))[c1]
                 # adapt to run with minimal example
                 w2 = np.genfromtxt("{}{}/wopt/w_theta{}_dat.txt".format(path2weights, i2, theta))                
                 r1 = np.random.randint(len(u1.trajectory))
                 r2 = np.random.choice(len(u2.trajectory),p=w2)
 
             else:
-                w1 = np.load("ar_pair{}.npy".format(old_pair1))[c1]
-                w2 = np.load("ar_pair{}.npy".format(old_pair2))[c2]                
+                w1 = np.load("{}/chain_weight_pair{}.npy".format(path, old_pair1))[c1]
+                w2 = np.load("{}/chain_weight_pair{}.npy".format(path, old_pair2))[c2]                
                 r1 = np.random.randint(len(u1.trajectory))
                 r2 = np.random.randint(len(u2.trajectory))
             
@@ -184,6 +186,8 @@ def reweighted_hierarchical_chain_growth(path2pep, path2weights, pair ,start = 0
         c1 +=2
         allPairs = mda.Universe("{}/pair0.pdb".format(dire) , at)
         allPairs.atoms.write("{}/pair.xtc".format(dire) , frames='all') 
+    np.save('{}/chain_weight_pair{}.npy'.format(path, pair) , ar)
+    np.save('{}/confIndex_pair{}.npy'.format(path, pair) , conf_index)
     return None
 
 rcAll = 0
@@ -205,8 +209,8 @@ level = 1
 for i in [2, 4, 8, 16]:
     start = 0
     subsequent_fragment = int(i/2)
-    reweighted_hierarchical_chain_growth(path2pep = path2pep, path2weights = path2weights, pair = i,
-                                         steps2subsequent_fragment = subsequent_fragment,
+    reweighted_hierarchical_chain_growth(path2pep = path2pep, path2weights = path2weights, path = path,
+                                         pair = i, steps2subsequent_fragment = subsequent_fragment,
                                          max_fragments = kmax , start=start,  range_end = range_end, 
                                          rmsd_cutOff = rmsd_cutOff , clash_D = clash_D, theta=theta)
 
