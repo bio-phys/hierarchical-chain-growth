@@ -31,7 +31,7 @@ Python 3.6+ is required.
 - A MD fragment library. You may prepare the library following the examples given in this repository.
 - If you want to perform RHCG: weights for the individual fragments (e.g., from ensemble reweighting against experimental data reporting on _local_ structure properties - such as chemical shifts)
 
-## Examples truncated tauK18
+## Example truncated tauK18
 ### Prepare fragments
 - Use amber tleap to generate (end-capped) fragments of desired length and with desired overlap.
 - For "prepare_fragment_list_tleap.py" you need as input a .fasta or .pdb file to get the sequence of the IDP/IDR you want to grow.
@@ -39,7 +39,7 @@ Python 3.6+ is required.
 	- The output .txt file can be used as input for tleap.
 - Here we show the procedure using the sequence of a truncated tauK18 as input (in form of a fasta file)
 
-#### Run molecular dynamics simulations of the fragments
+### Run molecular dynamics simulations of the fragments
 
 We have used replica-exchange molecular dynamics simulations to extensively sample conformations for each fragments.
 
