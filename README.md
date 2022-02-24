@@ -36,6 +36,7 @@ Python 3.6+ is required.
 - If you want to perform RHCG: weights for the individual fragments (e.g., from ensemble reweighting against experimental data reporting on _local_ structure properties - such as chemical shifts)
 
 ## Example truncated tauK18
+
 ### Prepare fragments
 - Use amber tleap to generate (end-capped) fragments of desired length and with desired overlap.
 - For "prepare_fragment_list_tleap.py" you need as input a .fasta or .pdb file to get the sequence of the IDP/IDR you want to grow.
@@ -67,4 +68,6 @@ Journal of Chemical Theory and Computation 2020 16 (1), 725-737, https://pubs.ac
 Lukas S. Stelzl, Lisa M. Pietrek, Andrea Holla, Javier S. Oroz, Mateusz Sikora, Jürgen Köfinger, Benjamin Schuler, Markus Zweckstetter, Gerhard Hummer, 
 JACS Au, in press, Preprint at http://dx.doi.org/10.1101/2021.11.23.469691
 
-3
+3 Efficient Ensemble Refinement by Reweighting,
+Jürgen Köfinger, Lukas S. Stelzl, Klaus Reuter, César Allande, Katrin Reichel, Gerhard Hummer
+Journal of chemical theory and computation 15 (5), 3390-3401, https://pubs.acs.org/doi/abs/10.1021/acs.jctc.8b01231
