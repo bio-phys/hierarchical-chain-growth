@@ -9,8 +9,9 @@
 ## make sure to check the path to .mdp files or other scripts needed before you run the scripts 
 ######
 
-
+## directory where to setup the fragment simulations
 dire=$1
+## name of the simulation system
 sys=$2
 ## index of first fragment
 s=$3
