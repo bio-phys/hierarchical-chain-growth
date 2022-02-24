@@ -43,9 +43,14 @@ Python 3.6+ is required.
 
 We have used replica-exchange molecular dynamics simulations to extensively sample conformations for each fragments.
 
+### Refine fragment ensembles with experimental data
+
+In Ref [2] we show how to refine fragment ensembles with experimental data. The refined fragment ensembles can be used
+for chain growth in an importance sampling framework. The BioEn package can be used to refine fragment ensembles.
+
 ### Run chain growth
 The files "run_hcg.py" and "run_rhcg.py" show how to run HCG or RHCG for a truncated tau K18. These are simple Python scripts that
-can be executed on the command line or submitted to a HPC cluster. Comments in "hcg_fct.py" provide a more detailed explanation
+can be executed on the command line or submitted to a HPC cluster. Comments in "hcg_fct.py" provide a explanation
 to different parameters that one can set for running chain growth and we refer to Ref 1 for more detailled discussions. 
 
 ## References
