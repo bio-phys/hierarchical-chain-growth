@@ -12,7 +12,9 @@
 
 dire=$1
 sys=$2
+## index of first fragment
 s=$3
+## index of last fragment
 e=$4
 
 ## scripts
@@ -103,7 +105,7 @@ done
 #######
 ## prod
 #######
-# run make replikas on terminal
+# run make replicas on terminal
 for i in $(seq $s $e) ; do
  cd $i
  mkdir -p prod
