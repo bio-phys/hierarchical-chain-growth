@@ -41,12 +41,13 @@ Python 3.6+ is required.
 
 ### Run molecular dynamics simulations of the fragments
 
-We have used replica-exchange molecular dynamics simulations to extensively sample conformations for each fragments.
+We have used replica-exchange molecular dynamics (REMD) simulations to extensively sample conformations for each fragments. The examples
+folder provides our workflow to setup REMD simulations of fragments.
 
 ### Refine fragment ensembles with experimental data
 
 In Ref [2] we show how to refine fragment ensembles with experimental data. The refined fragment ensembles can be used
-for chain growth in an importance sampling framework. The BioEn package can be used to refine fragment ensembles.
+for chain growth in an importance sampling framework. The BioEn package can be used to refine fragment ensembles [2,3].
 
 ### Run chain growth
 The files "run_hcg.py" and "run_rhcg.py" show how to run HCG or RHCG for a truncated tau K18. These are simple Python scripts that
@@ -61,3 +62,5 @@ Journal of Chemical Theory and Computation 2020 16 (1), 725-737, https://pubs.ac
 2 Global Structure of the Intrinsically Disordered Protein Tau Emerges from its Local Structure, 
 Lukas S. Stelzl, Lisa M. Pietrek, Andrea Holla, Javier S. Oroz, Mateusz Sikora, Jürgen Köfinger, Benjamin Schuler, Markus Zweckstetter, Gerhard Hummer, 
 JACS Au, in press, Preprint at http://dx.doi.org/10.1101/2021.11.23.469691
+
+3
