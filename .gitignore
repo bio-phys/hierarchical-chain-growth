@@ -5,8 +5,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 # ignore some outputs tests
-/truncated_tauK18/
-/truncated_tauK18_weightes/
+pair*
 
 # dirs from develop
 hierarchical_chain_growth.egg-info/
