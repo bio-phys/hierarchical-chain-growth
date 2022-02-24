@@ -40,6 +40,10 @@ n_pairs = len(fragment_l)
 hcg_l, promo_l = make_hcl_l(n_pairs)
 
 # maximal number of pairs/full-length models to assemble
+# here we use kmax  = 100 for test reason.
+# ideally you would set kmax = 1000 and then run n task arrays on a cluster to grow an ensemble with n*1000 members
+# this can be done using, e.g., the "submit_hcg_TA.job" script we provide in this folder
+# in our recent study (Ref [2]) we found that ensembles with >=10000 members give meaningful ensemble averages
 kmax = 100
 # MD fragments are sampled with or without end-capping groups
 capping_groups = True
