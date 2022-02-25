@@ -95,7 +95,7 @@ def make_hcl_l(N, n_to_c_term = True):
     Parameter
     ---------
     N : integer
-        number of fagments
+        number of fragments
     n_to_c_term : boolean
         direction of growth 
         True : from N-terminus to C-terminus
