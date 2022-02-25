@@ -1,5 +1,5 @@
 numpy
-MDAnalysis==1.0.0
+MDAnalysis==1.1.1
 pathlib2
 jupyter
 pytest
