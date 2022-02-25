@@ -65,10 +65,10 @@ In our recent study [2] we found that ensembles with >=10000 members give meanin
 
 ## Testing
 
-Run all the tests with one command
+Run integration tests
 
 ```bash
-  cd chain-growth
+  cd tests/integration/
   python -m pytest
 ```
 
