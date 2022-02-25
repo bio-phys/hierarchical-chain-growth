@@ -28,7 +28,7 @@ cd hierarchical-chain-growth
 pip install -e . 
 ```
 
-Python 3.6+ is required. This procedure was tested on Ubuntu 18.04.6.
+Python 3.6+ is required. This procedure was tested on Ubuntu 18.04.6. and Mac OS 12.0.1
 
 ## Inputs
 - The sequence or topology file of the desired IDP/IDR as .fasta or .pdb, respectively. If you use .fasta make sure the fasta file contains a "header" beginning with ">".
