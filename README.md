@@ -63,6 +63,16 @@ on a HPC cluster to grow an ensemble with n x1000 members. This can be done usin
 In our recent study [2] we found that ensembles with >=10000 members give meaningful ensemble averages.
 
 
+## Testing
+
+Run all the tests with one command
+
+```bash
+  cd chain-growth
+  python -m pytest
+```
+
+
 ## References
 1 Hierarchical Ensembles of Intrinsically Disordered Proteins at Atomic Resolution in Molecular Dynamics Simulations, 
 Lisa M. Pietrek, Lukas S. Stelzl, and Gerhard Hummer,
