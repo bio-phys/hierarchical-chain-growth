@@ -133,7 +133,17 @@ done
 ## run REMD
 for i in $(seq $s $e) ; do
  cd $i/prod
- sbatch -J remd$i  --dependency=afterok:$JOBID $path_to_scripts"re_prod.job" $sys
+ if [[ $i < $e ]]  ;
+  then sbatch -J remd$i  --dependency=afterok:$JOBID $path_to_scripts"re_prod.job" $sys
+ else
+  JOBID=$(sbatch -J remd$i  --dependency=afterok:$JOBID $path_to_scripts"re_prod.job" $sys  2>&1  | awk '{print $(NF)}')
+ fi
  cd ../../../ ;
 done
+
+
+#####
+## process output trajectory
+####
+#JOBID=$(sbatch -J trjconv --dependency=afterok:$JOBID $path_to_scripts"trjconv.job" $path_to_scripts"trjconv.sh" $s $e $sys 2>&1  | awk '{print $(NF)}')
 

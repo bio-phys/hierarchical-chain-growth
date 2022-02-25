@@ -1,4 +1,4 @@
-script="/phys/ptmp/lipietre/tau/REMD_fragments/make_replicas.py"
+script="/usr/path/script/make_replicas.py"
 
 mkdir -p prod
 cd prod

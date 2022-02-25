@@ -6,7 +6,10 @@ traj=$sys"_prod.part0001.xtc"
 tpr=$sys"_prod.tpr"
 #echo " the trajectory to be processed: $traj"
 #echo " the .tpr for the trajectory: $tpr"
-#
+
+#######
+# uncomment in case of the mdrun did not finish in one run you need to concatenate the different part
+#traj=$sys"_prod_concat.xtc"
 #gmx trjcat -f *.xtc -o $traj
 #
 
