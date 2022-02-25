@@ -50,7 +50,6 @@ def pair_fragments(input_ar, verbose=False):
 def next_power_of_2(N): 
     """ get number of hierarchy levels for chain growth
         -> the next power of 2 from the number of fragments
-    function created by Dr. Lukas S. Stelzl
 
     Parameters
     ----------
@@ -61,13 +60,17 @@ def next_power_of_2(N):
     -------
     next power of two for N : integer    
     """
+    ## Find next power of two one liner:
+    ## https://stackoverflow.com/questions/14267555/find-the-smallest-power-of-2-greater-than-or-equal-to-n-in-python
+    ## answereed by user https://stackoverflow.com/users/863122/jhoyla
+    ## on stackoverflow.com where user contributions are licensed under
+    ## CC-BY-SA 3.0 with attribution required.
     
     ## calculate number of hierarchy levels m for the number of fragments used
     return 1 if N == 0 else 2**(N - 1).bit_length()
 
 def flatten(pair_list):
     """ flattens list with pairs of fragments / pairs of paired fragments
-    function created by Dr. Lukas S. Stelzl
     
     Parameters
     ----------
@@ -87,7 +90,7 @@ def flatten(pair_list):
 
 def make_hcl_l(N, n_to_c_term = True):
     """ create input list with fragments/ pairs of fragments to assemble in HCG to get the full-length chain
-    original function from Dr. Lukas S. Stelzl, slightly modified by Lisa M. Pietrek
+    original function from Lukas S. Stelzl, slightly modified by Lisa M. Pietrek
 
     Parameter
     ---------
@@ -105,7 +108,7 @@ def make_hcl_l(N, n_to_c_term = True):
         list with boolean, if here is an promotion in level m (last assembly step)
     """
     next_power2 = next_power_of_2(N)
-    # from next power of 2 create max number of assemling levels -> M
+    # from next power of 2 create max number of assembling levels -> M
     m = np.log2(next_power2).astype(int)
     frag_pair_l = list(np.arange(N))
     hcg_l = []
