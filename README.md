@@ -57,7 +57,11 @@ for chain growth in an importance sampling framework. The BioEn package can be u
 ### Run chain growth
 The files "run_hcg.py" and "run_rhcg.py" show how to run HCG or RHCG for a truncated tau K18. These are simple Python scripts that
 can be executed on the command line or submitted to a HPC cluster. Comments in "hcg_fct.py" provide a explanation
-to different parameters that one can set for running chain growth and we refer to Ref 1 for more detailled discussions. 
+to different parameters that one can set for running chain growth and we refer to Ref 1 for more detailled discussions.  
+In the example we set the maximal number of full-length chains to grow, kmax, = 100 for test reason. We recommend to set kmax = 1000 and then run n task arrays 
+on a HPC cluster to grow an ensemble with n x1000 members. This can be done using, e.g., the "submit_hcg_TA.job" script we provide in this folder. 
+In our recent study [2] we found that ensembles with >=10000 members give meaningful ensemble averages.
+
 
 ## References
 1 Hierarchical Ensembles of Intrinsically Disordered Proteins at Atomic Resolution in Molecular Dynamics Simulations, 
