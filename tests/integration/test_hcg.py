@@ -8,6 +8,8 @@ import os , pytest, pickle
 import numpy as np
 import MDAnalysis as mda
 
+test_dir = os.path.dirname(os.path.abspath(__file__))
+
 def run_hcg():
     """
     run hcg with ri_l
@@ -18,11 +20,11 @@ def run_hcg():
     
     ## input file and path / output path
     # path to MD fragments
-    path0 = '../../examples/'
+    path0 = os.path.join(test_dir, '../../examples/')
     # path to store assembled models in
-    path = 'test_run_truncated_tauK18/'
+    path = os.path.join(test_dir, 'test_run_truncated_tauK18/')
     # file with sequence, format: "fasta" or "PDB"
-    sequence_f = '../../examples/truncated_tauK18.fasta'
+    sequence_f = os.path.join(test_dir, '../../examples/truncated_tauK18.fasta')
     
     ## fragment construction
     # length of MD fragments (without the end-capping groups if present)
@@ -51,7 +53,10 @@ def run_hcg():
     ###########
     ## run HCG with ri_l
     ###########
-    ri_l = pickle.load(open('../../examples/run_chain_growth/truncated_tauK18/confIndex_all_levels.pkl', 'rb'))
+    ri_l = pickle.load(open(
+        os.path.join(test_dir, '../../examples/run_chain_growth/truncated_tauK18/confIndex_all_levels.pkl'),
+        'rb')
+    )
     hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax=kmax,
             capping_groups=capping_groups, ri_l=ri_l) #, verbose=True) 
  
@@ -90,11 +95,11 @@ def test_sequence():
     run_hcg()    
     # path to topology file of idp grown with (r)hcg
     
-    file_hcg = 'test_run_truncated_tauK18/4/0/pair0.pdb'
+    file_hcg =  os.path.join(test_dir, 'test_run_truncated_tauK18/4/0/pair0.pdb')
     sequence_hcg = get_sequence_from_pdb(file_hcg)
     
     # path to reference sequence == inout sequence
-    file_ref =  '../../examples/truncated_tauK18.fasta'
+    file_ref = os.path.join(test_dir, '../../examples/truncated_tauK18.fasta')
     ## get amino acid sequence from PDB or fasta file in three letter code
     file_type = os.path.basename(file_ref).split('.')[-1]
     if file_type.upper() == 'FASTA':
@@ -107,8 +112,8 @@ def test_sequence():
 
 @pytest.mark.parametrize("pdb_xtc_l, target",
     [
-            (['test_run_truncated_tauK18/4/0/pair0.pdb',
-              'test_run_truncated_tauK18/4/0/pair.xtc'], 20.6),
+            ([ os.path.join(test_dir, 'test_run_truncated_tauK18/4/0/pair0.pdb'),
+               os.path.join(test_dir, 'test_run_truncated_tauK18/4/0/pair.xtc')], 20.6),
             ])
 def test_run_hcg_RG(pdb_xtc_l, target):
     """
@@ -120,8 +125,8 @@ def test_run_hcg_RG(pdb_xtc_l, target):
     
 @pytest.mark.parametrize("pdb_xtc_l, target",
     [
-            (['test_run_truncated_tauK18/4/0/pair0.pdb',
-              'test_run_truncated_tauK18/4/0/pair.xtc'], 51.0),
+            ([ os.path.join(test_dir, 'test_run_truncated_tauK18/4/0/pair0.pdb'),
+               os.path.join(test_dir, 'test_run_truncated_tauK18/4/0/pair.xtc')], 51.0),
             ])
 def test_run_hcg_end2end(pdb_xtc_l, target):
     end_to_end_distance = calc_end_to_end_distance(pdb_xtc_l)

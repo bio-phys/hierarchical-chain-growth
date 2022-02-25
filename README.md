@@ -28,7 +28,7 @@ cd hierarchical-chain-growth
 pip install -e . 
 ```
 
-Python 3.6+ is required. 
+Python 3.6+ is required. This procedure was tested on Ubuntu 18.04.6.
 
 ## Inputs
 - The sequence or topology file of the desired IDP/IDR as .fasta or .pdb, respectively. If you use .fasta make sure the fasta file contains a "header" beginning with ">".
@@ -65,10 +65,9 @@ In our recent study [2] we found that ensembles with >=10000 members give meanin
 
 ## Testing
 
-Run integration tests
+Run tests
 
 ```bash
-  cd tests/integration/
   python -m pytest
 ```
 
