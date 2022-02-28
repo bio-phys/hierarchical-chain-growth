@@ -90,7 +90,8 @@ def flatten(pair_list):
 
 def make_hcl_l(N, n_to_c_term = True):
     """ create input list with fragments/ pairs of fragments to assemble in HCG to get the full-length chain
-    original function from Lukas S. Stelzl, slightly modified by Lisa M. Pietrek
+    
+    Output details the assembly schedule for 1 to m levels. Level 0 are the individual fragments.
 
     Parameter
     ---------
@@ -106,6 +107,8 @@ def make_hcl_l(N, n_to_c_term = True):
         list for HCG with lists of fragments assigned to be paired
     hcg_a[:,1] : list
         list with boolean, if here is an promotion in level m (last assembly step)
+        
+    Original function from Lukas S. Stelzl, slightly modified by Lisa M. Pietrek
     """
     next_power2 = next_power_of_2(N)
     # from next power of 2 create max number of assembling levels -> M
