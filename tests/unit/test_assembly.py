@@ -28,7 +28,7 @@ def test_make_hcl_l_with_promotion():
     ##  one promotion going from level 4-> 5
     assert (promo_l[4] == True)
     
-    We also expect that the two unequal fragments for the penulitmative level
+    ## We also expect that the two unequal fragments for the penulitmative level
     assert( flatten(hcg_l[-2][1]).__len__() == 14)
     ## Out[29]: 14
     assert( flatten(hcg_l[-2][0]).__len__() == 32)
