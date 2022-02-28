@@ -23,8 +23,8 @@ def test_make_hcl_l_with_promotion():
     ##  index 0, level 1: pairs of fragments (level 0 are fragments)
     
     ## one promotion going from level 1->2
-    print( promo_l[0])
-    assert (promo_l[0] == True)
+    print( promo_l[1])
+    assert (promo_l[1] == True)
     
     ##  one promotion going from level 4-> 5
     assert (promo_l[4] == True)
