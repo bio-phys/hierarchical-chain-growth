@@ -79,7 +79,7 @@ Journal of Chemical Theory and Computation 2020 16 (1), 725-737, https://pubs.ac
 
 2 Global Structure of the Intrinsically Disordered Protein Tau Emerges from its Local Structure, 
 Lukas S. Stelzl, Lisa M. Pietrek, Andrea Holla, Javier S. Oroz, Mateusz Sikora, Jürgen Köfinger, Benjamin Schuler, Markus Zweckstetter, Gerhard Hummer, 
-JACS Au, in press, Preprint at http://dx.doi.org/10.1101/2021.11.23.469691
+JACS Au, in press, https://pubs.acs.org/doi/10.1021/jacsau.1c00536
 
 3 Efficient Ensemble Refinement by Reweighting,
 Jürgen Köfinger, Lukas S. Stelzl, Klaus Reuter, César Allande, Katrin Reichel, Gerhard Hummer
