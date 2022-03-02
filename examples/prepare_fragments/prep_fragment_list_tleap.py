@@ -64,6 +64,8 @@ for  i, pep in enumerate(fragmentL):
     #print( p)
     
     tleap_seq.write('fragment = sequence {ACE %s NME}\nsavepdb fragment %i/fragment.pdb\n\n'%(p,i))
+tleap_seq.write('quit')
+
 tleap_seq.close()
 
 

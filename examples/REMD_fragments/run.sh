@@ -34,7 +34,6 @@ for i in $(seq $s $e) ; do
  mkdir -p $i ;
 done
 tleap -f tleap.txt
-# need to quit tleap manually
 
 
 #######
