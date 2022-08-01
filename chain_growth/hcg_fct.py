@@ -320,6 +320,7 @@ def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
 
 
 def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
+             dimer_library=False, dict_to_fragment_folder=None,
              rmsd_cut_off=0.6, clash_distance=2.0, capping_groups=True,
              ri_l=None, verbose=False):
     """ perform hierarchical chain growth 
@@ -395,13 +396,33 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                 old_pair1 = flatten(pair_l[0])[0]
                 old_pair2 = flatten(pair_l[1])[0]
 
-            if m == 0:
+            if m == 0 and dimer_library:
+                ## path0 = path to dimer library
+                path2fragment = path0 
+                #print(old_pair1, old_pair2)
+                old_pair1_fragmentLib = dict_to_fragment_folder[old_pair1]
+                old_pair2_fragmentLib = dict_to_fragment_folder[old_pair2]
+                #print(old_pair1_fragmentLib, old_pair2_fragmentLib)
+                old_dire1 = '{}/{}'.format(path2fragment, old_pair1_fragmentLib)
+                old_dire2 = '{}/{}'.format(path2fragment, old_pair2_fragmentLib)
+                #print(old_dire1, old_dire2)
+                top = 'fragment.pdb'
+                xtc = 'fragment.xtc'
+                
+            elif m == 0 and dimer_library == False:
                 previous_level = 'MDfragments'             
                 path2fragment = path0
+                old_dire1 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair1)
+                old_dire2 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair2)
+                top = 'pair0.pdb'
+                xtc = 'pair.xtc'
             else:
                 path2fragment = path 
-            old_dire1 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair1)
-            old_dire2 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair2)
+                old_dire1 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair1)
+                old_dire2 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair2)
+                top = 'pair0.pdb'
+                xtc = 'pair.xtc'
+                
             # create folder/path to store assembled pairs
             dire = "{}/{}/{}".format(path, level, old_pair1)
             pathlib2.Path(dire).mkdir(parents=True, exist_ok=True)
@@ -409,24 +430,23 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             # promotion of unpaired fragment to next higher hierarchy level
             if promotion and m_i == (len(fragment_l)-1):
                 print('promotion in level, pair',  level, old_pair1)
-                if os.path.exists('{}/pair0.pdb'.format(dire)):
-                    # print('already copied promoted fragment ', 
-                    #       level, previous_level, old_pair1)
+                if os.path.exists('{}/{}'.format(dire, top)):
                     continue
                 else:
-                    shutil.copyfile('{}/pair0.pdb'.format(old_dire1),
+                    shutil.copyfile('{}/{}'.format(old_dire1, top),
                                         '{}/pair0.pdb'.format(dire))
-                    shutil.copyfile('{}/pair.xtc'.format(old_dire1),
+                    shutil.copyfile('{}/{}'.format(old_dire1, xtc),
                                         '{}/pair.xtc'.format(dire))
                     continue
                 
             # load universe -> load conformations of fragment 1 and 2
-            u1 = mda.Universe('{}/pair0.pdb'.format(old_dire1),
-                              '{}/pair.xtc'.format(old_dire1))
-            u2 = mda.Universe('{}/pair0.pdb'.format(old_dire2),
-                              '{}/pair.xtc'.format(old_dire2))                       
+            u1 = mda.Universe('{}/{}'.format(old_dire1, top),
+                              '{}/{}'.format(old_dire1, xtc))
+            u2 = mda.Universe('{}/{}'.format(old_dire2, top),
+                              '{}/{}'.format(old_dire2, xtc))      
             
             # residue ovearlap MD fragment
+            print(flatten(pair_l[1]))
             if len(flatten(pair_l[1])) == 1: 
                 o = overlaps_d[old_pair2]
             # overlap grown pairs, always == overlaps[0]
