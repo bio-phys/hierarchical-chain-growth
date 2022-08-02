@@ -320,7 +320,7 @@ def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
 
 
 def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
-             dimer_library=False, dict_to_fragment_folder=None,
+             online_fragment_library=False, dict_to_fragment_folder=None,
              rmsd_cut_off=0.6, clash_distance=2.0, capping_groups=True,
              ri_l=None, verbose=False):
     """ perform hierarchical chain growth 
@@ -343,6 +343,13 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
         path to the MD fragments (and to folders where the assembled pairs are stored in)
     kmax : integer
         number of pairs that should be assembled in level m_i
+    online_fragment_library : boolean
+         wheter to draw from a fragment library you sampled yourself or 
+         a pre-sampled fragment library that is available online for the chain assembly.
+         The default is False
+    dict_to_fragment_folder : dictionary
+        dictionary that transaltes between the input sequence - required fragments - 
+        and the code. The default is None
     rmsd_cut_off : float, optional
         cut-off for the RMSD of the fragment alignment. The default is 0.6
     clash_distance : float, optional
@@ -396,8 +403,8 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                 old_pair1 = flatten(pair_l[0])[0]
                 old_pair2 = flatten(pair_l[1])[0]
 
-            if m == 0 and dimer_library:
-                ## path0 = path to dimer library
+            if m == 0 and online_fragment_library:
+                ## path0 = path to online fragment library
                 path2fragment = path0 
                 #print(old_pair1, old_pair2)
                 old_pair1_fragmentLib = dict_to_fragment_folder[old_pair1]
@@ -409,7 +416,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                 top = 'fragment.pdb'
                 xtc = 'fragment.xtc'
                 
-            elif m == 0 and dimer_library == False:
+            elif m == 0 and online_fragment_library == False:
                 previous_level = 'MDfragments'             
                 path2fragment = path0
                 old_dire1 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair1)
