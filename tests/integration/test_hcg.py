@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from chain_growth.hcg_list import make_hcl_l
-from chain_growth.fragment_list import get_sequence_from_fasta, get_sequence_from_pdb, generate_fragment_list
+from chain_growth.fragment_list import generate_fragment_list, get_sequence #  _from_fasta, get_sequence_from_pdb, 
 from chain_growth.hcg_fct import hierarchical_chain_growth
 import os , pytest, pickle 
 import numpy as np
 import MDAnalysis as mda
-
 test_dir = os.path.dirname(os.path.abspath(__file__))
 
 def run_hcg():
@@ -96,16 +95,12 @@ def test_sequence():
     # path to topology file of idp grown with (r)hcg
     
     file_hcg =  os.path.join(test_dir, 'test_run_truncated_tauK18/4/0/pair0.pdb')
-    sequence_hcg = get_sequence_from_pdb(file_hcg)
+    sequence_hcg = get_sequence(file_hcg).three_letter_list()
     
     # path to reference sequence == inout sequence
     file_ref = os.path.join(test_dir, '../../examples/truncated_tauK18.fasta')
     ## get amino acid sequence from PDB or fasta file in three letter code
-    file_type = os.path.basename(file_ref).split('.')[-1]
-    if file_type.upper() == 'FASTA':
-        sequence_ref = get_sequence_from_fasta(file_ref)
-    elif file_type.upper() == 'PDB':
-        sequence_ref = get_sequence_from_pdb(file_ref)
+    sequence_ref = get_sequence(file_ref).three_letter_list()
         
     assert (sequence_hcg == sequence_ref)
 
