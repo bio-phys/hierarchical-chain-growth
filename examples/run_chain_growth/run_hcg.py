@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 
 """
-run_hcg
+run_hcg_multiproc
 -------
-run hierarchical chain groẃth
+runs HCG but with an inner loop parallelized
+run in parallel: assembly of pairs per level!
+run script is in essence the same as run_hcg.py but imports hcg from module chain_growth.hcg_fct_multiproc
 """
 from chain_growth.hcg_list import make_hcl_l
 from chain_growth.fragment_list import generate_fragment_list
 from chain_growth.hcg_fct import hierarchical_chain_growth
+import warnings
+warnings.filterwarnings('ignore')
 
 ################
 ## prepare HCG
@@ -17,7 +21,7 @@ from chain_growth.hcg_fct import hierarchical_chain_growth
 # path to MD fragments
 path0 = '..'
 # path to store assembled models in
-path = 'truncated_tauK18/'
+path = 'truncated_tauK18_multiproc/'
 # file with sequence, format: "fasta" or "PDB"
 sequence_f = '../truncated_tauK18.fasta'
 
