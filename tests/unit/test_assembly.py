@@ -3,11 +3,11 @@
 # -*- coding: utf-8 -*-
 
 from chain_growth.hcg_list import make_hcl_l, flatten
-from chain_growth.fragment_list import get_sequence_from_fasta, get_sequence_from_pdb, generate_fragment_list
-from chain_growth.hcg_fct import hierarchical_chain_growth
-import os , pytest, pickle 
-import numpy as np
-import MDAnalysis as mda
+# from chain_growth.fragment_list import get_sequence_from_fasta, get_sequence_from_pdb, generate_fragment_list
+# from chain_growth.hcg_fct import hierarchical_chain_growth
+# import numpy as np
+# import MDAnalysis as mda
+import os #, pytest, pickle 
 
 test_dir = os.path.dirname(os.path.abspath(__file__))
 

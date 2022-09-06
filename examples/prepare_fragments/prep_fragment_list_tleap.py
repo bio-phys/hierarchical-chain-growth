@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-genFragment
+prepare_fragment_list_tleap
 -----------
 prepare short overlapping fragments to generate a MD fragment library for (R)HCG
 -> script divide fulllength sequence of an IDP into fragments of desired length
