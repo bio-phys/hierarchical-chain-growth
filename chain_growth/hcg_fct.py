@@ -406,13 +406,10 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             if m == 0 and online_fragment_library:
                 ## path0 = path to online fragment library
                 path2fragment = path0 
-                #print(old_pair1, old_pair2)
                 old_pair1_fragmentLib = dict_to_fragment_folder[old_pair1]
                 old_pair2_fragmentLib = dict_to_fragment_folder[old_pair2]
-                #print(old_pair1_fragmentLib, old_pair2_fragmentLib)
                 old_dire1 = '{}/{}'.format(path2fragment, old_pair1_fragmentLib)
                 old_dire2 = '{}/{}'.format(path2fragment, old_pair2_fragmentLib)
-                #print(old_dire1, old_dire2)
                 top = 'fragment.pdb'
                 xtc = 'fragment.xtc'
                 
@@ -436,7 +433,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             
             # promotion of unpaired fragment to next higher hierarchy level
             if promotion and m_i == (len(fragment_l)-1):
-                print('promotion in level, pair',  level, old_pair1)
+                #print('promotion in level, pair',  level, old_pair1)
                 if os.path.exists('{}/{}'.format(dire, top)):
                     continue
                 else:
@@ -453,7 +450,6 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                               '{}/{}'.format(old_dire2, xtc))      
             
             # residue ovearlap MD fragment
-            print(flatten(pair_l[1]))
             if len(flatten(pair_l[1])) == 1: 
                 o = overlaps_d[old_pair2]
             # overlap grown pairs, always == overlaps[0]
