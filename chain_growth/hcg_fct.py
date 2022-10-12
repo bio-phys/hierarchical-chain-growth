@@ -600,9 +600,8 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
     # Later we need this number, which is also the folder name the full-length protein is stored in, for the analysis.
     number_hcg_levels = hcg_l.__len__()     
     # the expected time depends on the length of the protein to grow and kmax
-    # it would be good to have an estimate of this time from these values
-    expected_time = 30 # calc!
-    ## atm the progress bar does not work!
+    # it would be good to haveTODO:  an estimate of this time from these values
+    expected_time = 30 # TODO: calc!
     @progress_bar(expected_time=expected_time, increments=number_hcg_levels)
     def hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             online_fragment_library, dict_to_fragment_folder,
@@ -619,14 +618,7 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
               dict_to_fragment_folder=dict_to_fragment_folder,
               rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance, 
               capping_groups=capping_groups, ri_l=ri_l, verbose=verbose)
-    
-    # hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
-    #          online_fragment_library=online_fragment_library,
-    #          dict_to_fragment_folder=dict_to_fragment_folder,
-    #          rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance, 
-    #          capping_groups=capping_groups, ri_l=ri_l, verbose=verbose)
-    
-    return None # number_hcg_levels, path
+       return number_hcg_levels, path
 
 
 
