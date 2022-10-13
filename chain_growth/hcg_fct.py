@@ -12,9 +12,15 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import align
 import pathlib2, shutil, os
 import MDAnalysis.analysis.distances as distances
-from chain_growth.hcg_list import flatten
 from multiprocessing import Pool
 from functools import partial
+from chain_growth.fragment_list import generate_fragment_list
+from chain_growth.hcg_list import flatten , make_hcl_l
+import concurrent.futures
+import functools , time , itertools , warnings
+warnings.filterwarnings('ignore')
+
+from tqdm.auto import tqdm
 
 def translate_concept(u1, u2, proline_2nd_posi, align_begin1, align_end1, 
                       align_begin2, align_end2):
@@ -574,6 +580,124 @@ def _loop_func(variables, pairs):
                               draw_indices=draw_indices)
             return None
  
+def progress_bar(expected_time, increments=10):
+
+    #Here we create a progresss bar for HCG as decorator. Please run the collapsed cells.
+
+    def _progress_bar(func):
+
+        def timed_progress_bar(future, expected_time, increments=10):
+            """
+            https://stackoverflow.com/questions/59013308/python-progress-bar-for-non-loop-function
+            
+            Display progress bar for expected_time seconds.
+            Complete early if future completes.
+            Wait for future if it doesn't complete in expected_time.
+            """
+            interval = expected_time / increments
+
+            with tqdm(total=increments) as pbar:
+                for i in range(increments - 1):
+                    if future.done():
+                        # finish the progress bar
+                        # not sure if there's a cleaner way to do this?
+                        pbar.update(increments - i)
+                        return
+                    else:
+                        time.sleep(interval)
+                        pbar.update()
+                # if the future still hasn't completed, wait for it.
+                future.result()
+                pbar.update()
+
+        @functools.wraps(func)
+        def _func(*args, **kwargs):
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(func, *args, **kwargs)
+                timed_progress_bar(future, expected_time, increments)
+
+            return future.result()
+
+        return _func
+
+    return _progress_bar
+
+def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
+                         fragment_length=2, overlap=0, capping_groups=True,
+                         clash_distance = 2.0, online_fragment_library=True,
+                         rmsd_cut_off=0.6, ri_l=None, verbose=False):
+    """ Here we process your input sequence for the run with HCG. 
+        Other default arguments are defined here that do not to be user defined. 
+        We give some explanation of the default arguments. 
+        In order to just run HCG and build models it is not mandatory to read this.
+   TODO: update! 
+    Parameters
+    ----------
+    path0
+    path
+    fragment_length
+    overlap
+    capping_groups
+    clash_distance
+
+        ## path to MD fragments
+## path to store assembled models in
+#### Processing input and definition of default parameters
+
+# length of the residue overlap between subsequent fragments
+# length of MD fragments (without the end-capping groups if present)
+"""
+
+
+    # generate list of fragments, dictionary of overlaps between fragments
+    # generating overlaps_d is necessary, since to match the full-ltngh sequennce
+    # the overlap between e.g., the two last fragments can vary
+
+    fragment_l, overlaps_d = generate_fragment_list(sequence, fragment_length, overlap)
+    # number of fragments
+    n_pairs = fragment_l.__len__()
+
+    # hcg_l : list of paired fragments
+    # promo_l : list to evaluate if last fragment of level m in hcg_l is promoted to level m+1
+    hcg_l, promo_l = make_hcl_l(n_pairs)
+
+    ##### Dictionary to fragment folder in dimer library
+    # We need to create a dictionary that helps to translate between the input sequence and the fragments 
+    # needed to grow the full-length proteins as input for the HCG.
+
+    # create dictionary to translate between the sequence information and 
+    aa_l = ['GLY','ALA', 'VAL', 'LEU', 'ILE', 'THR', 'SER', 'CYS', 'GLN', 'ASN', 'GLU', 'ASP',
+            'LYS', 'TRP', 'ARG', 'TYR', 'PHE', 'HIS', 'PRO', 'MET']
+    d = { p : i for i, p in enumerate(itertools.product(aa_l, repeat=fragment_length))}
+    ### using this dict we could directly communicate between the order of fragments (== fragment id)
+    ### as defined by the sequence and the respective folder_id
+    dict_to_fragment_folder = {i : d[tuple(aa_pair)] for i , aa_pair in enumerate(fragment_l)}
+    # print(dict_to_fragment_folder)
+    # Before we run HCG we determine the number of hierarchical levels. You need this number for the progress bar we will generate for the HCG run. 
+    # Later we need this number, which is also the folder name the full-length protein is stored in, for the analysis.
+    number_hcg_levels = hcg_l.__len__()
+    # the expected time depends on the length of the protein to grow and kmax
+    # it would be good to haveTODO:  an estimate of this time from these values
+    expected_time = 30 # TODO: calc!
+    @progress_bar(expected_time=expected_time, increments=number_hcg_levels)
+    def hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
+            online_fragment_library, dict_to_fragment_folder,
+            rmsd_cut_off, clash_distance, capping_groups, ri_l,
+            verbose):
+        hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
+            online_fragment_library, dict_to_fragment_folder,
+            rmsd_cut_off, clash_distance, capping_groups, ri_l,
+            verbose)
+        return None
+
+    hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
+              online_fragment_library=online_fragment_library,
+              dict_to_fragment_folder=dict_to_fragment_folder,
+              rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance,
+              capping_groups=capping_groups, ri_l=ri_l, verbose=verbose)
+
+    return number_hcg_levels, path
+
  
 def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
              rmsd_cut_off=0.6, clash_distance=2.0, capping_groups=True,
