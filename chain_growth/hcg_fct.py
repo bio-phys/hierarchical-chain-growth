@@ -516,7 +516,7 @@ def _loop_func(variables, pairs):
  
     # promotion of unpaired fragment to next higher hierarchy level
     if promotion and m_i == (len(fragment_l)-1):
-        print('promotion in level, pair', level, old_pair1)
+        # print('promotion in level, pair', level, old_pair1)
         if not os.path.exists('{}/{}'.format(dire, top)):
             # print('already copied promoted fragment ', 
             #       level, previous_level, old_pair1)
