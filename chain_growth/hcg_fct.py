@@ -499,10 +499,12 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                 fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
                                   rmsd_cut_off, clash_distance,  kmax=k_max, ri_l=rs,
                                   draw_indices=draw_indices)
-            if streamlit_progressbar is not None:
-                i_it = i_it + 1
-                progress = float(i_it) / float(number_fragment_pairs_per_level)
-                streamlit_progressbar.progress(progress)
+        if streamlit_progressbar is not None:
+            i_it = i_it + 1
+            
+            progress = float(i_it) / float(number_hcg_levels)
+            print(i_it, progress)
+            streamlit_progressbar.progress(progress)
 
         if draw_indices:
             np.save("{}/confIndex_level{}.npy".format(path, level), r_l)
