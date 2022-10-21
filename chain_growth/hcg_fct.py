@@ -501,7 +501,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                                   draw_indices=draw_indices)
             if streamlit_progressbar is not None:
                 i_it = i_it + 1
-                progress = float(i_it) / float(number_hcg_levels)
+                progress = float(i_it) / float(number_fragment_pairs_per_level)
                 streamlit_progressbar.progress(progress)
 
         if draw_indices:
