@@ -3,3 +3,4 @@ MDAnalysis==1.1.1
 pathlib2
 jupyter
 pytest
+tqdm
