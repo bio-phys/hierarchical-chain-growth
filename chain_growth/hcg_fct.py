@@ -344,12 +344,9 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
         path to the MD fragments 
     path : string
         path to folders where the assembled pairs are stored in
-
-    path : path
-        path to the MD fragments (and to folders where the assembled pairs are stored in)
     kmax : integer
         number of pairs that should be assembled in level m_i
-    online_fragment_library : boolean
+    online_fragment_library : boolmodeean
          wheter to draw from a fragment library you sampled yourself or 
          a pre-sampled fragment library that is available online for the chain assembly.
          The default is False
@@ -412,7 +409,6 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                 old_pair2 = flatten(pair_l[1])[0]
 
             if m == 0 and online_fragment_library:
-                ## path0 = path to online fragment library
                 path2fragment = path0 
                 old_pair1_fragmentLib = dict_to_fragment_folder[old_pair1]
                 old_pair2_fragmentLib = dict_to_fragment_folder[old_pair2]
@@ -424,8 +420,8 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             elif m == 0 and online_fragment_library == False:
                 previous_level = 'MDfragments'             
                 path2fragment = path0
-                old_dire1 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair1)
-                old_dire2 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair2)
+                old_dire1 = '{}/{}'.format(path2fragment, old_pair1)
+                old_dire2 = '{}/{}'.format(path2fragment, old_pair2)
                 top = 'pair0.pdb'
                 xtc = 'pair.xtc'
             else:
@@ -503,7 +499,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             i_it = i_it + 1
             
             progress = float(i_it) / float(number_hcg_levels)
-            print(i_it, progress)
+            #print(i_it, progress)
             streamlit_progressbar.progress(progress)
 
         if draw_indices:
@@ -632,9 +628,11 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
                 rmsd_cut_off, clash_distance, capping_groups, ri_l,
                 verbose):
             hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-                online_fragment_library, dict_to_fragment_folder,
-                rmsd_cut_off, clash_distance, capping_groups, ri_l,
-                verbose)
+                online_fragment_library=online_fragment_library,
+                  dict_to_fragment_folder=dict_to_fragment_folder,
+                  rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance, 
+                  capping_groups=capping_groups, ri_l=ri_l, 
+                  verbose=verbose)
             return None
     
         hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
