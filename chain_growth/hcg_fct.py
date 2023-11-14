@@ -622,6 +622,36 @@ def progress_bar(expected_time, increments=10):
 
     return _progress_bar
 
+def estimate_run_time(data):
+    """ Estimate run time for HCG - depends on kmax = number of full-length chains to grow 
+                                     and chain length = number amino acids per chain
+
+        Keeping one argument fixed and varying the other, the time evolutiob can be described by a linear function for both, kmax and chain length.
+                Run time is ~ proportional to kmax * chain length.
+        Therefore we fit a linear function for both arguments and multiply them.
+        Parameters for functions from a least square fit.
+        NOTE: The estimated time may overestimate the true run time for several seconds to minutes - difference more pronounced for large kmax or chain lengths.
+        
+        Parameters
+        ----------
+        data : numpy array
+            x = kmax
+            y = chain length
+            
+        Returns
+        -------
+        estimated time as float
+        
+        Thanks to Johannes Betz.
+        
+        """
+    x, y = data
+    def fit_linear(x, a, b, c):
+        return a  + b*x + c*x *np.log(x)
+    fit_x = fit_linear(x, 1.719e-01,  1.131e-02, -1.689e-05)
+    fit_y = fit_linear(y, 1.236e+01, -7.738e-02,  2.485e-02)
+    return fit_x * fit_y
+    
 def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
                          fragment_length=2, overlap=0, capping_groups=True,
                          clash_distance = 2.0, online_fragment_library=True,
@@ -678,7 +708,10 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
     number_hcg_levels = hcg_l.__len__()
     # the expected time depends on the length of the protein to grow and kmax
     # it would be good to haveTODO:  an estimate of this time from these values
-    expected_time = 30 # TODO: calc!
+    data = np.vstack([kmax, len(sequence)])
+    expected_time = estimate_run_time(data) # TODO: calc
+    print(expected_time)
+#    expected_time = 30 # TODO: calc!
     @progress_bar(expected_time=expected_time, increments=number_hcg_levels)
     def hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             online_fragment_library, dict_to_fragment_folder,
