@@ -425,7 +425,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                     
             np.save("{}/confIndex_level{}.npy".format(path, m+1), r_l) 
 
-        if np.all(streamlit_progressbar) != None:
+        if streamlit_progressbar is not None:
             i_it = i_it + 1
 
             progress = float(i_it) / float(number_hcg_levels)
