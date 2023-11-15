@@ -329,7 +329,7 @@ def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
 def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
              online_fragment_library=False, dict_to_fragment_folder=None,
              rmsd_cut_off=0.6, clash_distance=2.0, capping_groups=True,
-             ri_l=None, verbose=False):
+             ri_l=None, streamlit_progressbar=None, verbose=False):
     """ perform hierarchical chain growth 
     assemble fragments/ pairs of fragments until reaching the full-length chain
     by calling _loop_func -> does the inner loop and calls fragment assembly
@@ -376,6 +376,10 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
     """
     
     last_level = False
+    k_max = kmax
+    number_hcg_levels = hcg_l.__len__()
+    i_it = 0
+
     cpu = os.cpu_count()
     for m , fragment_l in enumerate(hcg_l): 
         # folder to save assembled pair in this level (m+1)
@@ -395,7 +399,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             
         # if MD fragments are sampled with end-capping_groups, 
         # they are removed in the last assembly step 
-        if m+1 == len(hcg_l):
+        if m+1 == number_hcg_levels:
             last_level = True
     
         if len(fragment_l) > cpu:
@@ -420,6 +424,13 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
                     r_l += [r]
                     
             np.save("{}/confIndex_level{}.npy".format(path, m+1), r_l) 
+
+        if np.all(streamlit_progressbar) != None:
+            i_it = i_it + 1
+
+            progress = float(i_it) / float(number_hcg_levels)
+            #print(i_it, progress)
+            streamlit_progressbar.progress(progress)
     return None
 
 
@@ -646,10 +657,10 @@ def estimate_run_time(data):
         
         """
     x, y = data
-    def fit_linear(x, a, b, c):
+    def _fit_linear(x, a, b, c):
         return a  + b*x + c*x *np.log(x)
-    fit_x = fit_linear(x, 1.719e-01,  1.131e-02, -1.689e-05)
-    fit_y = fit_linear(y, 1.236e+01, -7.738e-02,  2.485e-02)
+    fit_x = _fit_linear(x, 1.719e-01,  1.131e-02, -1.689e-05)
+    fit_y = _fit_linear(y, 1.236e+01, -7.738e-02,  2.485e-02)
     return fit_x * fit_y
 
 
@@ -713,7 +724,7 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
     # the expected time depends on the length of the protein to grow and kmax
     # it would be good to haveTODO:  an estimate of this time from these values
     data = np.vstack([kmax, len(sequence)])
-    expected_time = estimate_run_time(data) # TODO: calc
+    expected_time = estimate_run_time(data)[0] # TODO: calc
     print(expected_time)
 #    expected_time = 30 # TODO: calc!
 
