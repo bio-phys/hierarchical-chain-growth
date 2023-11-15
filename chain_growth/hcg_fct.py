@@ -651,11 +651,16 @@ def estimate_run_time(data):
     fit_x = fit_linear(x, 1.719e-01,  1.131e-02, -1.689e-05)
     fit_y = fit_linear(y, 1.236e+01, -7.738e-02,  2.485e-02)
     return fit_x * fit_y
-    
+
+
+
 def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
                          fragment_length=2, overlap=0, capping_groups=True,
                          clash_distance = 2.0, online_fragment_library=True,
-                         rmsd_cut_off=0.6, ri_l=None, verbose=False):
+                         #create_fragment_dict=True ,
+                         dict_to_fragment_folder = None,
+                         rmsd_cut_off=0.6, ri_l=None, streamlit_progressbar=None,
+                         verbose=False):
     """ Here we process your input sequence for the run with HCG. 
         Other default arguments are defined here that do not to be user defined. 
         We give some explanation of the default arguments. 
@@ -691,17 +696,16 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
     # promo_l : list to evaluate if last fragment of level m in hcg_l is promoted to level m+1
     hcg_l, promo_l = make_hcl_l(n_pairs)
 
-    ##### Dictionary to fragment folder in dimer library
-    # We need to create a dictionary that helps to translate between the input sequence and the fragments 
-    # needed to grow the full-length proteins as input for the HCG.
+    if online_fragment_library: # or create_fragment_dict:
+        # create dictionary to translate between the sequence information and
+        aa_l = ['GLY','ALA', 'VAL', 'LEU', 'ILE', 'THR', 'SER', 'CYS', 'GLN', 'ASN', 'GLU', 'ASP',
+                'LYS', 'TRP', 'ARG', 'TYR', 'PHE', 'HIS', 'PRO', 'MET']
+        d = { p : i for i, p in enumerate(itertools.product(aa_l, repeat=fragment_length))}
+        ### using this dict we could directly communicate between the order of fragments (== fragment id)
+        ### as defined by the sequence and the respective folder_id
+        dict_to_fragment_folder = {i : d[tuple(aa_pair)] for i , aa_pair in enumerate(fragment_l)}
 
-    # create dictionary to translate between the sequence information and 
-    aa_l = ['GLY','ALA', 'VAL', 'LEU', 'ILE', 'THR', 'SER', 'CYS', 'GLN', 'ASN', 'GLU', 'ASP',
-            'LYS', 'TRP', 'ARG', 'TYR', 'PHE', 'HIS', 'PRO', 'MET']
-    d = { p : i for i, p in enumerate(itertools.product(aa_l, repeat=fragment_length))}
-    ### using this dict we could directly communicate between the order of fragments (== fragment id)
-    ### as defined by the sequence and the respective folder_id
-    dict_to_fragment_folder = {i : d[tuple(aa_pair)] for i , aa_pair in enumerate(fragment_l)}
+
     # print(dict_to_fragment_folder)
     # Before we run HCG we determine the number of hierarchical levels. You need this number for the progress bar we will generate for the HCG run. 
     # Later we need this number, which is also the folder name the full-length protein is stored in, for the analysis.
@@ -712,22 +716,32 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
     expected_time = estimate_run_time(data) # TODO: calc
     print(expected_time)
 #    expected_time = 30 # TODO: calc!
-    @progress_bar(expected_time=expected_time, increments=number_hcg_levels)
-    def hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-            online_fragment_library, dict_to_fragment_folder,
-            rmsd_cut_off, clash_distance, capping_groups, ri_l,
-            verbose):
-        hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-            online_fragment_library, dict_to_fragment_folder,
-            rmsd_cut_off, clash_distance, capping_groups, ri_l,
-            verbose)
-        return None
 
-    hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-              online_fragment_library=online_fragment_library,
-              dict_to_fragment_folder=dict_to_fragment_folder,
-              rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance,
-              capping_groups=capping_groups, ri_l=ri_l, verbose=verbose)
+    if streamlit_progressbar is not None:
+        hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
+                  online_fragment_library=online_fragment_library,
+                  dict_to_fragment_folder=dict_to_fragment_folder,
+                  rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance,
+                  capping_groups=capping_groups, ri_l=ri_l,
+                  streamlit_progressbar=streamlit_progressbar,
+                  verbose=verbose)
+    else:
+        @progress_bar(expected_time=expected_time, increments=number_hcg_levels)
+        def hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
+                online_fragment_library, dict_to_fragment_folder,
+                rmsd_cut_off, clash_distance, capping_groups, ri_l,
+                verbose):
+            hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
+                online_fragment_library, dict_to_fragment_folder,
+                rmsd_cut_off, clash_distance, capping_groups, ri_l,
+                verbose)
+            return None
+    
+        hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
+                  online_fragment_library=online_fragment_library,
+                  dict_to_fragment_folder=dict_to_fragment_folder,
+                  rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance,
+                  capping_groups=capping_groups, ri_l=ri_l, verbose=verbose)
 
     return number_hcg_levels, path
 
