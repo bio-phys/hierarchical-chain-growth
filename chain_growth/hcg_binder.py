@@ -193,4 +193,4 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
                   rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance,
                   capping_groups=capping_groups, ri_l=ri_l, verbose=verbose)
 
-    return None #number_hcg_levels, path
+    return number_hcg_levels, path
