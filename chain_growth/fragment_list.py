@@ -14,7 +14,7 @@ class get_sequence:
         Parameters
         ----------
         input_sequence : string
-            Either path to sequence file (PDB or fasta) or seqeunce as string in one letter
+            Either path to sequence file (PDB or fasta) or sequence as string in one letter
             amino acid code / nucleic acid.
 
         """
@@ -31,7 +31,7 @@ class get_sequence:
         Returns
         -------
         sequence_list : list
-            created list with nucleic acid sequence from PDB file
+            created list with nucleic acid or amino acid sequence from PDB file
         """
 
         ## make universe with PDB file
@@ -47,7 +47,7 @@ class get_sequence:
         Returns
         -------
         sequence_list : list
-            created list with nucleic acid sequence from fasta file
+            created list with nucleic acid  or amino acid sequence from fasta file
         """
 
         ## open fasta file and read lines
@@ -67,7 +67,7 @@ class get_sequence:
         Returns
         -------
         sequence_list : list
-            created list with nucleic acid sequence from from string
+            created list with nucleic acid  or amino acid sequence from from string
         """
         NA = self.NA
         if NA:
@@ -97,8 +97,9 @@ def generate_fragment_list(input_sequence, fragment_length, overlap, NA=False, n
     Parameters
     ----------
     input_sequence : string
-        path to PDB or fasta file to get sequence from
-        or amino acid one letter code as string
+        path to PDB or fasta file with the sequence of the polymer
+        or amino acid sequence in one letter code / nucleic acid sequence as string
+        NOTE: functions are NOT case sensitive
     fragment_length : integer
         desired fragment length 
     overlap : integer
@@ -113,7 +114,7 @@ def generate_fragment_list(input_sequence, fragment_length, overlap, NA=False, n
         key: number fragment, value: overlap
     """
     
-    ## get sequence from PDB or fasta file (amino acid sequence in three letter code)
+    ## get sequence from PDB or fasta file (amino acid sequence in three letter code or nucleic acid sequence)
     sequence_list = get_sequence(input_sequence, NA).get_sequence_list()
     
     ## generate list of fragments with desired length
