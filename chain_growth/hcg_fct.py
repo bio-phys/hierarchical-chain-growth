@@ -14,13 +14,7 @@ import pathlib2, shutil, os
 import MDAnalysis.analysis.distances as distances
 from multiprocessing import Pool
 from functools import partial
-from chain_growth.fragment_list import generate_fragment_list
-from chain_growth.hcg_list import flatten , make_hcl_l
-import concurrent.futures
-import functools , time , itertools , warnings
-warnings.filterwarnings('ignore')
-
-from tqdm.auto import tqdm
+from chain_growth.hcg_list import flatten
 
 def translate_concept(u1, u2, proline_2nd_posi, align_begin1, align_end1, 
                       align_begin2, align_end2):
@@ -184,7 +178,7 @@ def get_residue_indices_for_assembly(overlap0, current_overlap, capping_groups,
     ## e: additional factor for end-capping groups
     ## having 1 overlapping residue + align peptide bonds does work only with headgroup!
     e = 1
-    if overlap0  == 0:
+    if overlap0  <= 1:
         e = 0
         align_begin1= -2
         align_end1= -1
@@ -327,8 +321,7 @@ def fragment_assembly(u1, u2, dire, select, index_clash_l, index_merge_l,
         return None
 
 def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
-             online_fragment_library=False, dict_to_fragment_folder=None,
-             rmsd_cut_off=0.6, clash_distance=2.0, capping_groups=True,
+             dict_to_fragment_folder=None, rmsd_cut_off=0.6, clash_distance=2.0, capping_groups=True,
              ri_l=None, streamlit_progressbar=None, verbose=False):
     """ perform hierarchical chain growth 
     assemble fragments/ pairs of fragments until reaching the full-length chain
@@ -352,10 +345,6 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
         path to the MD fragments (and to folders where the assembled pairs are stored in)
     kmax : integer
         number of pairs that should be assembled in level m_i
-    online_fragment_library : boolean
-         wheter to draw from a fragment library you sampled yourself or 
-         a pre-sampled fragment library that is available online for the chain assembly.
-         The default is False
     dict_to_fragment_folder : dictionary
         dictionary that transaltes between the input sequence - required fragments - 
         and the code. The default is None
@@ -408,7 +397,7 @@ def hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
             num_threads = len(fragment_l)
         pairs = [(m_i, pair_l) for m_i, pair_l in enumerate(fragment_l)]
         d = {"path0": path0, "path": path, 
-             "online_fragment_library": online_fragment_library, "dict_to_fragment_folder": dict_to_fragment_folder,
+             "dict_to_fragment_folder": dict_to_fragment_folder,
              "level": level, 'previous_level': previous_level,
              "last_level": last_level, "fragment_l": fragment_l, "rmsd_cutoff": rmsd_cut_off,
              "clash_distance": clash_distance, "kmax": kmax, "r_l":r_l,
@@ -461,7 +450,6 @@ def _loop_func(variables, pairs):
     m_i, pair_l = pairs
     path0 = variables["path0"]
     path = variables["path"]
-    online_fragment_library = variables["online_fragment_library"]
     dict_to_fragment_folder = variables["dict_to_fragment_folder"]
     level = variables["level"]
     previous_level = variables["previous_level"]
@@ -494,7 +482,7 @@ def _loop_func(variables, pairs):
         old_pair1 = flatten(pair_l[0])[0]
         old_pair2 = flatten(pair_l[1])[0]
         
-    if previous_level == 0 and online_fragment_library:
+    if previous_level == 0 and dict_to_fragment_folder is not None:
         ## path0 = path to online fragment library
         path2fragment = path0 
         #print(old_pair1, old_pair2)
@@ -507,7 +495,7 @@ def _loop_func(variables, pairs):
         top = 'fragment.pdb'
         xtc = 'fragment.xtc'
                 
-    elif previous_level == 0 and online_fragment_library == False:
+    elif previous_level == 0 and dict_to_fragment_folder is None:
         previous_level = 'MDfragments'             
         path2fragment = path0
         old_dire1 = '{}/{}/{}'.format(path2fragment, previous_level, old_pair1)
@@ -591,170 +579,6 @@ def _loop_func(variables, pairs):
                               draw_indices=draw_indices)
             return None
  
-def progress_bar(expected_time, increments=10):
-
-    #Here we create a progresss bar for HCG as decorator. Please run the collapsed cells.
-
-    def _progress_bar(func):
-
-        def timed_progress_bar(future, expected_time, increments=10):
-            """
-            https://stackoverflow.com/questions/59013308/python-progress-bar-for-non-loop-function
-            
-            Display progress bar for expected_time seconds.
-            Complete early if future completes.
-            Wait for future if it doesn't complete in expected_time.
-            """
-            interval = expected_time / increments
-
-            with tqdm(total=increments) as pbar:
-                for i in range(increments - 1):
-                    if future.done():
-                        # finish the progress bar
-                        # not sure if there's a cleaner way to do this?
-                        pbar.update(increments - i)
-                        return
-                    else:
-                        time.sleep(interval)
-                        pbar.update()
-                # if the future still hasn't completed, wait for it.
-                future.result()
-                pbar.update()
-
-        @functools.wraps(func)
-        def _func(*args, **kwargs):
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-                future = pool.submit(func, *args, **kwargs)
-                timed_progress_bar(future, expected_time, increments)
-
-            return future.result()
-
-        return _func
-
-    return _progress_bar
-
-def estimate_run_time(data):
-    """ Estimate run time for HCG - depends on kmax = number of full-length chains to grow 
-                                     and chain length = number amino acids per chain
-
-        Keeping one argument fixed and varying the other, the time evolutiob can be described by a linear function for both, kmax and chain length.
-                Run time is ~ proportional to kmax * chain length.
-        Therefore we fit a linear function for both arguments and multiply them.
-        Parameters for functions from a least square fit.
-        NOTE: The estimated time may overestimate the true run time for several seconds to minutes - difference more pronounced for large kmax or chain lengths.
-        
-        Parameters
-        ----------
-        data : numpy array
-            x = kmax
-            y = chain length
-            
-        Returns
-        -------
-        estimated time as float
-        
-        Thanks to Johannes Betz.
-        
-        """
-    x, y = data
-    def _fit_linear(x, a, b, c):
-        return a  + b*x + c*x *np.log(x)
-    fit_x = _fit_linear(x, 1.719e-01,  1.131e-02, -1.689e-05)
-    fit_y = _fit_linear(y, 1.236e+01, -7.738e-02,  2.485e-02)
-    return fit_x * fit_y
-
-
-
-def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
-                         fragment_length=2, overlap=0, capping_groups=True,
-                         clash_distance = 2.0, online_fragment_library=True,
-                         #create_fragment_dict=True ,
-                         dict_to_fragment_folder = None,
-                         rmsd_cut_off=0.6, ri_l=None, streamlit_progressbar=None,
-                         verbose=False):
-    """ Here we process your input sequence for the run with HCG. 
-        Other default arguments are defined here that do not to be user defined. 
-        We give some explanation of the default arguments. 
-        In order to just run HCG and build models it is not mandatory to read this.
-   TODO: update! 
-    Parameters
-    ----------
-    path0
-    path
-    fragment_length
-    overlap
-    capping_groups
-    clash_distance
-
-        ## path to MD fragments
-## path to store assembled models in
-#### Processing input and definition of default parameters
-
-# length of the residue overlap between subsequent fragments
-# length of MD fragments (without the end-capping groups if present)
-"""
-
-
-    # generate list of fragments, dictionary of overlaps between fragments
-    # generating overlaps_d is necessary, since to match the full-ltngh sequennce
-    # the overlap between e.g., the two last fragments can vary
-
-    fragment_l, overlaps_d = generate_fragment_list(sequence, fragment_length, overlap)
-    # number of fragments
-    n_pairs = fragment_l.__len__()
-
-    # hcg_l : list of paired fragments
-    # promo_l : list to evaluate if last fragment of level m in hcg_l is promoted to level m+1
-    hcg_l, promo_l = make_hcl_l(n_pairs)
-
-    if online_fragment_library: # or create_fragment_dict:
-        # create dictionary to translate between the sequence information and
-        aa_l = ['GLY','ALA', 'VAL', 'LEU', 'ILE', 'THR', 'SER', 'CYS', 'GLN', 'ASN', 'GLU', 'ASP',
-                'LYS', 'TRP', 'ARG', 'TYR', 'PHE', 'HIS', 'PRO', 'MET']
-        d = { p : i for i, p in enumerate(itertools.product(aa_l, repeat=fragment_length))}
-        ### using this dict we could directly communicate between the order of fragments (== fragment id)
-        ### as defined by the sequence and the respective folder_id
-        dict_to_fragment_folder = {i : d[tuple(aa_pair)] for i , aa_pair in enumerate(fragment_l)}
-
-
-    # print(dict_to_fragment_folder)
-    # Before we run HCG we determine the number of hierarchical levels. You need this number for the progress bar we will generate for the HCG run. 
-    # Later we need this number, which is also the folder name the full-length protein is stored in, for the analysis.
-    number_hcg_levels = hcg_l.__len__()
-    # the expected time depends on the length of the protein to grow and kmax
-    # it would be good to haveTODO:  an estimate of this time from these values
-    data = np.vstack([kmax, len(sequence)])
-    expected_time = estimate_run_time(data)[0] # TODO: calc
-    print(expected_time)
-#    expected_time = 30 # TODO: calc!
-
-    if streamlit_progressbar is not None:
-        hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-                  online_fragment_library=online_fragment_library,
-                  dict_to_fragment_folder=dict_to_fragment_folder,
-                  rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance,
-                  capping_groups=capping_groups, ri_l=ri_l,
-                  streamlit_progressbar=streamlit_progressbar,
-                  verbose=verbose)
-    else:
-        @progress_bar(expected_time=expected_time, increments=number_hcg_levels)
-        def hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-                online_fragment_library, dict_to_fragment_folder,
-                rmsd_cut_off, clash_distance, capping_groups, ri_l,
-                verbose):
-            hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-                online_fragment_library, dict_to_fragment_folder,
-                rmsd_cut_off, clash_distance, capping_groups, ri_l,
-                verbose)
-            return None
-    
-        hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-                  online_fragment_library=online_fragment_library,
-                  dict_to_fragment_folder=dict_to_fragment_folder,
-                  rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance,
-                  capping_groups=capping_groups, ri_l=ri_l, verbose=verbose)
-
-    return number_hcg_levels, path
 
  
 def reweighted_hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax, 
