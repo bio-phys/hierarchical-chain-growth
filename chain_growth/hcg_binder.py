@@ -183,9 +183,12 @@ def run_hcg_binder(sequence, kmax, path0='dimerLibrary/' , path='out/',
                 rmsd_cut_off, clash_distance, capping_groups, ri_l,
                 verbose):
             hierarchical_chain_growth(hcg_l, promo_l, overlaps_d, path0, path, kmax,
-                dict_to_fragment_folder,
-                rmsd_cut_off, clash_distance, capping_groups, ri_l,
-                verbose)
+                dict_to_fragment_folder=dict_to_fragment_folder,
+                rmsd_cut_off=rmsd_cut_off, clash_distance=clash_distance,
+                capping_groups=capping_groups, ri_l=ri_l,
+                streamlit_progressbar=streamlit_progressbar,
+                verbose=verbose)
+
             return None
     
         hcg(hcg_l, promo_l, overlaps_d, path0, path, kmax,
