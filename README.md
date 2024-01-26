@@ -79,7 +79,9 @@ A free web application to grow ensembles of disordered proteins can be found her
 
 We uploaded a speed-up version of HCG to the branch “multiprocessing_hcg”. Here, fragment assembly steps in one level are run in parallel. This version of HCG is also run in our web application of HCG. NOTE: For now, only HCG can be run in this way.
 
-This branch also contains a slightly adapted version of HCG (parallelized) to grow ensembles of disordered single-stranded NA (ssNA). For growing ssRNA polymers, we uploaded a pre-sampled fragment library here https://zenodo.org/records/8369324. Please refer to Ref 5 for more detailed information. 
+### Single-stranded nucleic acid
+
+This branch also contains a slightly adapted version of HCG (parallelized) to grow ensembles of disordered single-stranded nucleic acid (ssNA). For growing ssRNA polymers, we uploaded a pre-sampled fragment library here https://zenodo.org/records/8369324. Please refer to Ref 5 for more detailed information. 
 
 
 ## References
