@@ -77,7 +77,7 @@ def estimate_run_time(data):
             
         Returns
         -------
-        estimated time as float
+        estimated time as float in seconds
         
         Thanks to Johannes Betz.
         
