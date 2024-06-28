@@ -81,8 +81,7 @@ We uploaded a speed-up version of HCG to the branch “multiprocessing_hcg”. H
 
 ### Single-stranded nucleic acid
 
-This branch also contains a slightly adapted version of HCG (parallelized) to grow ensembles of disordered single-stranded nucleic acid (ssNA). For growing ssRNA polymers, we uploaded a pre-sampled fragment library here https://zenodo.org/records/8369324. Please refer to Ref 5 for more detailed information. 
-
+This branch also contains a slightly adapted, also parallelized version of HCG ("hct_fct_NA.py") to grow ensembles of disordered single-stranded nucleic acid (ssNA). For growing ssRNA polymers, we uploaded a pre-sampled fragment library here https://zenodo.org/records/8369324. In the adapted code, we added another function called "run_hcg_NA()" that can be used to run HCG. Please refer to Ref 5 for more detailed information.
 
 ## References
 1 Hierarchical Ensembles of Intrinsically Disordered Proteins at Atomic Resolution in Molecular Dynamics Simulations.
@@ -101,5 +100,6 @@ Journal of Chemical Theory and Computation 2019 15 (5), 3390-3401, https://pubs.
 2023, 78, 102501, https://doi.org/10.1016/j.sbi.2022.102501
 
 
-5 Hierarchical Assembly of Single-Stranded RNA, preprint bioRxiv  September 2023, https://www.biorxiv.org/content/10.1101/2023.08.01.551474v2
+5 Hierarchical Assembly of Single-Stranded RNA. Lisa M. Pietrek, Lukas S. Stelzl, and Gerhard Hummer, 
+J. Chem. Theory Comput. 2024 20 (5), 2246–2260
 
