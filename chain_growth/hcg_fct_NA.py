@@ -519,7 +519,6 @@ def run_hcg_NA(sequence, kmax, path0='fragmentLib_RNA/' , path='out/',
         ## what kind of nucleic acid to grow
         ## to run with DNA use own fragment library
         ## alignment and clash functions work for DNA, too
-        rna =  True
         if rna:  
             aa_l = ['A', 'C', 'G', 'U']
         else:
