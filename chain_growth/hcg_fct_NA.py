@@ -403,9 +403,9 @@ def _loop_func(variables, pairs):
     else:
         ## load universe -> load conformations of fragment 1 and 2
         u1 = mda.Universe('{}/{}'.format(old_dire1, top),
-                          '{}/{}'.format(old_dire1, xtc))
+                          '{}/{}'.format(old_dire1, xtc), refresh_offsets=True)
         u2 = mda.Universe('{}/{}'.format(old_dire2, top),
-                          '{}/{}'.format(old_dire2, xtc))
+                          '{}/{}'.format(old_dire2, xtc), refresh_offsets=True)
     
         ## by default load uniform weights
         w1 = np.ones(u1.trajectory.n_frames)/u1.trajectory.n_frames
